@@ -3,6 +3,7 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { PrismaClient } from '@prisma/client';
 import { withAccelerate } from '@prisma/extension-accelerate';
+import { admin } from 'better-auth/plugins/admin';
 
 // Use Prisma Accelerate (DATABASE_URL via HTTPS proxy) for runtime queries.
 // PrismaPg / DIRECT_URL requires raw TCP on port 5432, which is not available
@@ -18,4 +19,7 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma as any, {
     provider: 'postgresql',
   }),
+  plugins: [
+    admin(),
+  ],
 });

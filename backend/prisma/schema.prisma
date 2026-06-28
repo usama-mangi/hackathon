@@ -23,6 +23,10 @@ model User {
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
+  role          String?
+  banned        Boolean?
+  banReason     String?
+  banExpires    DateTime?
 
   sessions Session[]
   accounts Account[]
