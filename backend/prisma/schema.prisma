@@ -16,17 +16,17 @@ datasource db {
 // ---------------------------------------------------------------------------
 
 model User {
-  id            String    @id
-  name          String
-  email         String    @unique
-  emailVerified Boolean
-  image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
-  role          String?
-  banned        Boolean?
-  banReason     String?
-  banExpires    DateTime?
+  id             String                 @id
+  name           String
+  email          String                 @unique
+  emailVerified  Boolean
+  image          String?
+  createdAt      DateTime
+  updatedAt      DateTime
+  role           String?
+  banned         Boolean?
+  banReason      String?
+  banExpires     DateTime?
   sessions       Session[]
   accounts       Account[]
   hackathons     Hackathon[]
@@ -39,8 +39,8 @@ model Hackathon {
   id           String                 @id @default(uuid())
   name         String
   description  String?
-  startDate    DateTime
-  endDate      DateTime
+  startsAt     DateTime
+  endsAt       DateTime
   isActive     Boolean                @default(true)
   authorId     String
   author       User                   @relation(fields: [authorId], references: [id], onDelete: Cascade)
