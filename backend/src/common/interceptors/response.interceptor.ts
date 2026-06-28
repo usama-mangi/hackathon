@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 import { RESPONSE_MESSAGE_KEY } from '../decorators/response-message.decorator';
 
 export interface Response<T> {
-  status: number;
+  statusCode: number;
   message: string;
   data: T;
 }
@@ -34,7 +34,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
 
     return next.handle().pipe(
       map((data) => ({
-        status: response.statusCode,
+        statusCode: response.statusCode,
         message,
         data: data ?? null,
       })),
