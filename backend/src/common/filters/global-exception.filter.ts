@@ -24,7 +24,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     // Standard NestJS exception responses can be objects (e.g. validation errors)
     const message =
       typeof exceptionResponse === 'object' && exceptionResponse !== null
-        ? (exceptionResponse as any).message || JSON.stringify(exceptionResponse)
+        ? (exceptionResponse as any).message || exceptionResponse
         : exceptionResponse;
 
     response.status(status).json({

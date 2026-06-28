@@ -87,4 +87,36 @@ describe('GlobalExceptionFilter', () => {
       data: null,
     });
   });
+
+  it('should extract clean validation error objects from BadRequestException response', () => {
+    const mockStatus = 400;
+    const mockValidationErrors = [
+      { property: 'email', message: 'email must be a valid email' },
+      { property: 'password', message: 'password should not be empty' },
+    ];
+    const mockErrorResponse = {
+      message: mockValidationErrors,
+    };
+    const mockException = new HttpException(mockErrorResponse, mockStatus);
+
+    const mockResponse = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    const mockHost = {
+      switchToHttp: () => ({
+        getResponse: () => mockResponse,
+      }),
+    } as unknown as ArgumentsHost;
+
+    filter.catch(mockException, mockHost);
+
+    expect(mockResponse.status).toHaveBeenCalledWith(mockStatus);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      status: mockStatus,
+      message: mockValidationErrors,
+      data: null,
+    });
+  });
 });
