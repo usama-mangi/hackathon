@@ -15,6 +15,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "backend": "cd backend && npm run start:dev"
+    "backend": "cd backend && npm run start:dev",
+    "studio": "cd backend && npx prisma studio"
   }
 }

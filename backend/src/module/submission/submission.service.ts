@@ -8,6 +8,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
 import { UpdateSubmissionDto } from './dto/update-submission.dto';
+import { VoteSubmissionDto } from './dto/vote-submission.dto';
 
 @Injectable()
 export class SubmissionService {
@@ -201,5 +202,45 @@ export class SubmissionService {
         team: true,
       },
     });
+  }
+
+  async vote(submissionId: string, userId: string, dto: VoteSubmissionDto) {
+    const submission = await this.prisma.submission.findUnique({
+      where: { id: submissionId },
+      include: { team: true },
+    });
+
+    if (!submission) {
+      throw new NotFoundException('Submission not found');
+    }
+
+    // Verify user is a hackathon participant
+    const isParticipant = await this.prisma.hackathonParticipant.findUnique({
+      where: {
+        hackathonId_userId: {
+          hackathonId: submission.team.hackathonId,
+          userId,
+        },
+      },
+    });
+
+    if (!isParticipant) {
+      throw new ForbiddenException('Only hackathon participants can vote');
+    }
+
+    try {
+      return await this.prisma.vote.create({
+        data: {
+          submissionId,
+          userId,
+          score: dto.score,
+        },
+      });
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        throw new ConflictException('You have already voted for this submission');
+      }
+      throw error;
+    }
   }
 }

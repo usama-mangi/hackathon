@@ -1,4 +1,4 @@
-import { Controller, Get, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
 import {
   AllowAnonymous,
   Session,
@@ -6,6 +6,7 @@ import {
 } from '@thallesp/nestjs-better-auth';
 import { ResponseMessage } from '../../common/decorators/response-message.decorator';
 import { SubmissionService } from './submission.service';
+import { VoteSubmissionDto } from './dto/vote-submission.dto';
 
 @Controller('submission')
 export class SubmissionController {
@@ -22,5 +23,15 @@ export class SubmissionController {
   @ResponseMessage('Submission deleted successfully')
   async remove(@Param('id') id: string, @Session() session: UserSession) {
     return this.submissionService.delete(id, session.user.id);
+  }
+
+  @Post(':id/vote')
+  @ResponseMessage('Vote cast successfully')
+  async vote(
+    @Param('id') id: string,
+    @Body() voteSubmissionDto: VoteSubmissionDto,
+    @Session() session: UserSession,
+  ) {
+    return this.submissionService.vote(id, session.user.id, voteSubmissionDto);
   }
 }

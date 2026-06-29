@@ -85,4 +85,35 @@ export class HackathonService {
       throw error;
     }
   }
+
+  async getResults(id: string) {
+    // Check if hackathon exists
+    await this.findOne(id);
+
+    const submissions = await this.prisma.submission.findMany({
+      where: {
+        team: {
+          hackathonId: id,
+        },
+      },
+      include: {
+        team: true,
+        votes: true,
+      },
+    });
+
+    const leaderboard = submissions.map((sub) => {
+      const totalScore = sub.votes.reduce((sum, vote) => sum + (vote.score || 0), 0);
+      const { votes, ...rest } = sub;
+      return {
+        ...rest,
+        totalScore,
+        voteCount: votes.length,
+      };
+    });
+
+    leaderboard.sort((a, b) => b.totalScore - a.totalScore);
+
+    return leaderboard;
+  }
 }

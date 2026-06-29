@@ -97,4 +97,11 @@ export class HackathonController {
   async getSubmissions(@Param('id') id: string) {
     return this.submissionService.findSubmissionsByHackathon(id);
   }
+
+  @Get(':id/results')
+  @AllowAnonymous()
+  @ResponseMessage('Leaderboard retrieved successfully')
+  async getResults(@Param('id') id: string) {
+    return this.hackathonService.getResults(id);
+  }
 }
