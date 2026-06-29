@@ -16,21 +16,23 @@ datasource db {
 // ---------------------------------------------------------------------------
 
 model User {
-  id             String                 @id
-  name           String
-  email          String                 @unique
-  emailVerified  Boolean
-  image          String?
-  createdAt      DateTime
-  updatedAt      DateTime
-  role           String?
-  banned         Boolean?
-  banReason      String?
-  banExpires     DateTime?
-  sessions       Session[]
-  accounts       Account[]
-  hackathons     Hackathon[]
-  participations HackathonParticipant[]
+  id              String                 @id
+  name            String
+  email           String                 @unique
+  emailVerified   Boolean
+  image           String?
+  createdAt       DateTime
+  updatedAt       DateTime
+  role            String?
+  banned          Boolean?
+  banReason       String?
+  banExpires      DateTime?
+  sessions        Session[]
+  accounts        Account[]
+  hackathons      Hackathon[]
+  participations  HackathonParticipant[]
+  teams           Team[]
+  teamMemberships TeamMember[]
 
   @@map("user")
 }
@@ -45,6 +47,7 @@ model Hackathon {
   authorId     String
   author       User                   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   participants HackathonParticipant[]
+  teams        Team[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -108,4 +111,34 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Team {
+  id          String @id @default(uuid())
+  name        String
+  inviteCode  String @unique
+  hackathonId String
+  leaderId    String
+
+  hackathon Hackathon    @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  leader    User         @relation(fields: [leaderId], references: [id])
+  members   TeamMember[]
+  // submission  Submission?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("team")
+}
+
+model TeamMember {
+  id     String @id @default(uuid())
+  teamId String
+  userId String
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@map("team_member")
 }

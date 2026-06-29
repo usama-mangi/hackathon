@@ -4,10 +4,15 @@ import { ResponseMessage } from '../../common/decorators/response-message.decora
 import { HackathonService } from './hackathon.service';
 import { CreateHackathonDto } from './dto/create-hackathon.dto';
 import { UpdateHackathonDto } from './dto/update-hackathon.dto';
+import { TeamService } from './team.service';
+import { CreateTeamDto } from './dto/create-team.dto';
 
 @Controller('hackathon')
 export class HackathonController {
-  constructor(private readonly hackathonService: HackathonService) {}
+  constructor(
+    private readonly hackathonService: HackathonService,
+    private readonly teamService: TeamService,
+  ) {}
 
   @Post()
   @Roles(['ADMIN'])
@@ -55,5 +60,22 @@ export class HackathonController {
     @Session() session: UserSession,
   ) {
     return this.hackathonService.join(id, session.user.id);
+  }
+
+  @Post(':id/teams')
+  @ResponseMessage('Team created successfully')
+  async createTeam(
+    @Param('id') id: string,
+    @Body() createTeamDto: CreateTeamDto,
+    @Session() session: UserSession,
+  ) {
+    return this.teamService.createTeam(id, session.user.id, createTeamDto);
+  }
+
+  @Get(':id/teams')
+  @Roles(['ADMIN'])
+  @ResponseMessage('Hackathon teams retrieved successfully')
+  async getTeams(@Param('id') id: string) {
+    return this.teamService.findTeamsByHackathon(id);
   }
 }
