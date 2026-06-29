@@ -21,6 +21,20 @@ export class TeamService {
       throw new BadRequestException('This hackathon is no longer active');
     }
 
+    // Verify that the leader has already joined the hackathon
+    const isParticipant = await this.prisma.hackathonParticipant.findUnique({
+      where: {
+        hackathonId_userId: {
+          hackathonId,
+          userId: leaderId,
+        },
+      },
+    });
+
+    if (!isParticipant) {
+      throw new ForbiddenException('You must join the hackathon before creating a team');
+    }
+
     // Check if user is already leading a team in this hackathon
     const existingTeam = await this.prisma.team.findFirst({
       where: {
@@ -68,6 +82,20 @@ export class TeamService {
 
     if (team.inviteCode !== joinTeamDto.inviteCode) {
       throw new BadRequestException('Invalid invite code');
+    }
+
+    // Verify that the user joining has already joined the hackathon
+    const isParticipant = await this.prisma.hackathonParticipant.findUnique({
+      where: {
+        hackathonId_userId: {
+          hackathonId: team.hackathonId,
+          userId,
+        },
+      },
+    });
+
+    if (!isParticipant) {
+      throw new ForbiddenException('You must join the hackathon before joining a team');
     }
 
     try {
