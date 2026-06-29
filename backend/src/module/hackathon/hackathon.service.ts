@@ -5,12 +5,16 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { HackathonAuthService } from '../../common/services/hackathon-auth.service';
 import { CreateHackathonDto } from './dto/create-hackathon.dto';
 import { UpdateHackathonDto } from './dto/update-hackathon.dto';
 
 @Injectable()
 export class HackathonService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly hackathonAuth: HackathonAuthService,
+  ) {}
 
   async create(createHackathonDto: CreateHackathonDto, authorId: string) {
     return this.prisma.hackathon.create({
@@ -39,9 +43,14 @@ export class HackathonService {
     return hackathon;
   }
 
-  async update(id: string, updateHackathonDto: UpdateHackathonDto) {
-    // Check if hackathon exists
-    await this.findOne(id);
+  async update(
+    id: string,
+    updateHackathonDto: UpdateHackathonDto,
+    userId: string,
+    userRole: string,
+  ) {
+    // ORGANIZER may only update their own hackathon; ADMIN may update any.
+    await this.hackathonAuth.assertOrganizerOrAdmin(id, userId, userRole);
 
     return this.prisma.hackathon.update({
       where: { id },
@@ -55,9 +64,9 @@ export class HackathonService {
     });
   }
 
-  async remove(id: string) {
-    // Check if hackathon exists
-    await this.findOne(id);
+  async remove(id: string, userId: string, userRole: string) {
+    // ORGANIZER may only delete their own hackathon; ADMIN may delete any.
+    await this.hackathonAuth.assertOrganizerOrAdmin(id, userId, userRole);
 
     return this.prisma.hackathon.delete({
       where: { id },

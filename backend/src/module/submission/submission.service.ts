@@ -6,13 +6,17 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { HackathonAuthService } from '../../common/services/hackathon-auth.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
 import { UpdateSubmissionDto } from './dto/update-submission.dto';
 import { VoteSubmissionDto } from './dto/vote-submission.dto';
 
 @Injectable()
 export class SubmissionService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly hackathonAuth: HackathonAuthService,
+  ) {}
 
   async create(teamId: string, userId: string, dto: CreateSubmissionDto) {
     const team = await this.prisma.team.findUnique({
@@ -204,7 +208,7 @@ export class SubmissionService {
     });
   }
 
-  async vote(submissionId: string, userId: string, dto: VoteSubmissionDto) {
+  async vote(submissionId: string, userId: string, userRole: string, dto: VoteSubmissionDto) {
     const submission = await this.prisma.submission.findUnique({
       where: { id: submissionId },
       include: { team: true },
@@ -214,19 +218,12 @@ export class SubmissionService {
       throw new NotFoundException('Submission not found');
     }
 
-    // Verify user is a hackathon participant
-    const isParticipant = await this.prisma.hackathonParticipant.findUnique({
-      where: {
-        hackathonId_userId: {
-          hackathonId: submission.team.hackathonId,
-          userId,
-        },
-      },
-    });
-
-    if (!isParticipant) {
-      throw new ForbiddenException('Only hackathon participants can vote');
-    }
+    // Only ADMIN or a confirmed hackathon Judge may vote
+    await this.hackathonAuth.assertJudgeOrAdmin(
+      submission.team.hackathonId,
+      userId,
+      userRole,
+    );
 
     try {
       return await this.prisma.vote.create({

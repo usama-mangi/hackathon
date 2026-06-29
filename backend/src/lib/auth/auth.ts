@@ -24,6 +24,17 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  user: {
+    additionalFields: {
+      role: {
+        type: 'string',
+        required: false,
+        defaultValue: 'PARTICIPANT',
+        // Allow the signup payload to pass this field
+        input: true,
+      },
+    },
+  },
   database: prismaAdapter(prisma as any, {
     provider: 'postgresql',
   }),
@@ -33,7 +44,9 @@ export const auth = betterAuth({
         before: async (user) => ({
           data: {
             ...user,
-            role: 'PARTICIPANT',
+            // Whitelist: only ORGANIZER is accepted from signup; everything else → PARTICIPANT.
+            // This prevents self-assigning ADMIN or any other privileged role.
+            role: user.role === 'ORGANIZER' ? 'ORGANIZER' : 'PARTICIPANT',
           },
         }),
       },

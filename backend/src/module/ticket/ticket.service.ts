@@ -5,11 +5,15 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { HackathonAuthService } from '../../common/services/hackathon-auth.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 
 @Injectable()
 export class TicketService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly hackathonAuth: HackathonAuthService,
+  ) {}
 
   /**
    * Request help — only a hackathon participant (team member) can create a ticket.
@@ -67,9 +71,13 @@ export class TicketService {
   }
 
   /**
-   * View all open tickets for a hackathon — Admin only.
+   * View all open tickets for a hackathon — ADMIN, ORGANIZER, or hackathon Mentor.
    */
-  async getTicketsByHackathon(hackathonId: string) {
+  async getTicketsByHackathon(
+    hackathonId: string,
+    userId: string,
+    userRole: string,
+  ) {
     const hackathon = await this.prisma.hackathon.findUnique({
       where: { id: hackathonId },
     });
@@ -77,6 +85,9 @@ export class TicketService {
     if (!hackathon) {
       throw new NotFoundException('Hackathon not found');
     }
+
+    // Allow ADMIN, ORGANIZER (own hackathon), or confirmed hackathon mentor
+    await this.hackathonAuth.assertMentorOrAbove(hackathonId, userId, userRole);
 
     return this.prisma.ticket.findMany({
       where: { hackathonId, status: 'OPEN' },
@@ -89,9 +100,13 @@ export class TicketService {
   }
 
   /**
-   * Admin claims a ticket — only one user can claim at a time.
+   * Claim a ticket — ADMIN, ORGANIZER (own hackathon), or hackathon Mentor.
    */
-  async claimTicket(ticketId: string, adminId: string) {
+  async claimTicket(
+    ticketId: string,
+    claimantId: string,
+    userRole: string,
+  ) {
     const ticket = await this.prisma.ticket.findUnique({
       where: { id: ticketId },
     });
@@ -100,13 +115,20 @@ export class TicketService {
       throw new NotFoundException('Ticket not found');
     }
 
+    // Check claimant is authorized for this hackathon
+    await this.hackathonAuth.assertMentorOrAbove(
+      ticket.hackathonId,
+      claimantId,
+      userRole,
+    );
+
     if (ticket.status === 'RESOLVED') {
       throw new ConflictException('This ticket has already been resolved');
     }
 
     if (ticket.status === 'CLAIMED') {
       throw new ConflictException(
-        'This ticket has already been claimed by another admin',
+        'This ticket has already been claimed by another mentor',
       );
     }
 
@@ -114,7 +136,7 @@ export class TicketService {
       where: { id: ticketId },
       data: {
         status: 'CLAIMED',
-        mentorId: adminId,
+        mentorId: claimantId,
       },
       include: {
         team: { select: { id: true, name: true } },
@@ -124,9 +146,13 @@ export class TicketService {
   }
 
   /**
-   * Mark a ticket as resolved — Admin or team member.
+   * Mark a ticket as resolved — ADMIN, ORGANIZER, hackathon Mentor, or team member.
    */
-  async resolveTicket(ticketId: string, userId: string, isAdmin: boolean) {
+  async resolveTicket(
+    ticketId: string,
+    userId: string,
+    userRole: string,
+  ) {
     const ticket = await this.prisma.ticket.findUnique({
       where: { id: ticketId },
       include: {
@@ -142,14 +168,15 @@ export class TicketService {
       throw new ConflictException('This ticket is already resolved');
     }
 
-    // Check authorization: admin OR a member of the ticket's team
-    if (!isAdmin) {
-      const isMember = ticket.team.members.some((m) => m.userId === userId);
-      if (!isMember) {
-        throw new ForbiddenException(
-          'Only admins or team members can resolve this ticket',
-        );
-      }
+    // Allow ADMIN / ORGANIZER / Mentor OR a member of the ticket's own team
+    const isMember = ticket.team.members.some((m) => m.userId === userId);
+    if (!isMember) {
+      // Not a team member — must be privileged staff
+      await this.hackathonAuth.assertMentorOrAbove(
+        ticket.hackathonId,
+        userId,
+        userRole,
+      );
     }
 
     return this.prisma.ticket.update({

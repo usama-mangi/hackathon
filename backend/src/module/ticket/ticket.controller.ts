@@ -1,5 +1,5 @@
 import { Controller, Param, Put } from '@nestjs/common';
-import { Roles, Session, type UserSession } from '@thallesp/nestjs-better-auth';
+import { Session, type UserSession } from '@thallesp/nestjs-better-auth';
 import { ResponseMessage } from '../../common/decorators/response-message.decorator';
 import { TicketService } from './ticket.service';
 
@@ -8,13 +8,16 @@ export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
 
   @Put(':id/claim')
-  @Roles(['ADMIN'])
   @ResponseMessage('Ticket claimed successfully')
   async claim(
     @Param('id') ticketId: string,
     @Session() session: UserSession,
   ) {
-    return this.ticketService.claimTicket(ticketId, session.user.id);
+    return this.ticketService.claimTicket(
+      ticketId,
+      session.user.id,
+      session.user.role as string,
+    );
   }
 
   @Put(':id/resolve')
@@ -23,7 +26,10 @@ export class TicketController {
     @Param('id') ticketId: string,
     @Session() session: UserSession,
   ) {
-    const isAdmin = session.user.role === 'ADMIN';
-    return this.ticketService.resolveTicket(ticketId, session.user.id, isAdmin);
+    return this.ticketService.resolveTicket(
+      ticketId,
+      session.user.id,
+      session.user.role as string,
+    );
   }
 }

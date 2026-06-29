@@ -13,6 +13,7 @@ import { TeamModule } from './module/team/team.module';
 import { EventModule } from './module/event/event.module';
 import { AnnoucementModule } from './module/annoucement/annoucement.module';
 import { TicketModule } from './module/ticket/ticket.module';
+import { ApplicationModule } from './module/application/application.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { TicketModule } from './module/ticket/ticket.module';
     EventModule,
     AnnoucementModule,
     TicketModule,
+    ApplicationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

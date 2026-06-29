@@ -38,7 +38,7 @@ export class HackathonController {
   ) {}
 
   @Post()
-  @Roles(['ADMIN'])
+  @Roles(['ADMIN', 'ORGANIZER'])
   @ResponseMessage('Hackathon created successfully')
   async create(
     @Body() createHackathonDto: CreateHackathonDto,
@@ -60,20 +60,30 @@ export class HackathonController {
   }
 
   @Patch(':id')
-  @Roles(['ADMIN'])
+  @Roles(['ADMIN', 'ORGANIZER'])
   @ResponseMessage('Hackathon updated successfully')
   async update(
     @Param('id') id: string,
     @Body() updateHackathonDto: UpdateHackathonDto,
+    @Session() session: UserSession,
   ) {
-    return this.hackathonService.update(id, updateHackathonDto);
+    return this.hackathonService.update(
+      id,
+      updateHackathonDto,
+      session.user.id,
+      session.user.role as string,
+    );
   }
 
   @Delete(':id')
-  @Roles(['ADMIN'])
+  @Roles(['ADMIN', 'ORGANIZER'])
   @ResponseMessage('Hackathon deleted successfully')
-  async remove(@Param('id') id: string) {
-    return this.hackathonService.remove(id);
+  async remove(@Param('id') id: string, @Session() session: UserSession) {
+    return this.hackathonService.remove(
+      id,
+      session.user.id,
+      session.user.role as string,
+    );
   }
 
   @Post(':id/join')
@@ -93,7 +103,7 @@ export class HackathonController {
   }
 
   @Get(':id/teams')
-  @Roles(['ADMIN'])
+  @Roles(['ADMIN', 'ORGANIZER'])
   @ResponseMessage('Hackathon teams retrieved successfully')
   async getTeams(@Param('id') id: string) {
     return this.teamService.findTeamsByHackathon(id);
@@ -107,7 +117,7 @@ export class HackathonController {
   }
 
   @Post(':id/events')
-  @Roles(['ADMIN'])
+  @Roles(['ADMIN', 'ORGANIZER'])
   @ResponseMessage('Event added successfully')
   async createEvent(
     @Param('id') id: string,
@@ -131,7 +141,7 @@ export class HackathonController {
   }
 
   @Post(':id/announcements')
-  @Roles(['ADMIN'])
+  @Roles(['ADMIN', 'ORGANIZER'])
   @ResponseMessage('Announcement created successfully')
   async createAnnouncement(
     @Param('id') id: string,
@@ -148,9 +158,13 @@ export class HackathonController {
   }
 
   @Get(':id/tickets')
-  @Roles(['ADMIN'])
+  @Roles(['ADMIN', 'ORGANIZER'])
   @ResponseMessage('Open tickets retrieved successfully')
-  async getTickets(@Param('id') id: string) {
-    return this.ticketService.getTicketsByHackathon(id);
+  async getTickets(@Param('id') id: string, @Session() session: UserSession) {
+    return this.ticketService.getTicketsByHackathon(
+      id,
+      session.user.id,
+      session.user.role as string,
+    );
   }
 }

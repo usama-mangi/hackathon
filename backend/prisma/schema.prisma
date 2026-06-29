@@ -35,6 +35,9 @@ model User {
   teamMemberships TeamMember[]
   votes           Vote[]
   mentoredTickets Ticket[]
+  roleApplications    HackathonRoleApplication[]
+  hackathonMentorships HackathonMentor[]
+  hackathonJudgeships  HackathonJudge[]
 
   @@map("user")
 }
@@ -53,6 +56,9 @@ model Hackathon {
   events        Event[]
   announcements Announcement[]
   tickets      Ticket[]
+  applications HackathonRoleApplication[]
+  mentors      HackathonMentor[]
+  judges       HackathonJudge[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -225,4 +231,75 @@ model Ticket {
   updatedAt   DateTime  @updatedAt
 
   @@map("ticket")
+}
+
+// ---------------------------------------------------------------------------
+// Hackathon-scoped roles — MENTOR and JUDGE
+// ---------------------------------------------------------------------------
+
+model HackathonRoleApplication {
+  id          String    @id @default(uuid())
+  hackathonId String
+  userId      String
+  roleType    String    // 'MENTOR' | 'JUDGE'
+  status      String    @default("PENDING") // 'PENDING' | 'ACCEPTED' | 'REJECTED'
+
+  // Common fields
+  bio         String    @db.Text
+  motivation  String    @db.Text
+  experience  String    @db.Text
+
+  // Mentor-specific
+  skills      String?
+  linkedinUrl String?
+  githubUrl   String?
+  availability String?
+
+  // Judge-specific
+  expertiseArea     String?
+  priorJudgingExp   String?   @db.Text
+  conflictStatement String?   @db.Text
+
+  hackathon   Hackathon @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mentor      HackathonMentor?
+  judge       HackathonJudge?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([hackathonId, userId, roleType])
+  @@map("hackathon_role_application")
+}
+
+model HackathonMentor {
+  id            String    @id @default(uuid())
+  hackathonId   String
+  userId        String
+  applicationId String    @unique
+
+  hackathon     Hackathon                @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  user          User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  application   HackathonRoleApplication @relation(fields: [applicationId], references: [id])
+
+  createdAt     DateTime  @default(now())
+
+  @@unique([hackathonId, userId])
+  @@map("hackathon_mentor")
+}
+
+model HackathonJudge {
+  id            String    @id @default(uuid())
+  hackathonId   String
+  userId        String
+  applicationId String    @unique
+
+  hackathon     Hackathon                @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  user          User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  application   HackathonRoleApplication @relation(fields: [applicationId], references: [id])
+
+  createdAt     DateTime  @default(now())
+
+  @@unique([hackathonId, userId])
+  @@map("hackathon_judge")
 }

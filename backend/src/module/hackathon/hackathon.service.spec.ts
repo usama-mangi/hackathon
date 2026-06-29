@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { HackathonService } from './hackathon.service';
 import { PrismaService } from '../../prisma/prisma.service';
+import { HackathonAuthService } from '../../common/services/hackathon-auth.service';
 
 describe('HackathonService', () => {
   let service: HackathonService;
@@ -36,6 +37,13 @@ describe('HackathonService', () => {
     },
   };
 
+  const mockHackathonAuthService = {
+    assertOrganizerOrAdmin: jest.fn().mockResolvedValue(undefined),
+    assertMentorOrAbove: jest.fn().mockResolvedValue(undefined),
+    isOrganizerOrAdmin: jest.fn().mockResolvedValue(true),
+    getHackathonOrThrow: jest.fn().mockResolvedValue({}),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -43,6 +51,10 @@ describe('HackathonService', () => {
         {
           provide: PrismaService,
           useValue: mockPrismaService,
+        },
+        {
+          provide: HackathonAuthService,
+          useValue: mockHackathonAuthService,
         },
       ],
     }).compile();
@@ -108,7 +120,7 @@ describe('HackathonService', () => {
       const dto = {
         name: 'Updated',
       };
-      const result = await service.update('hackathon-1', dto);
+      const result = await service.update('hackathon-1', dto, 'admin-1', 'ADMIN');
       expect(result.name).toBe('Updated');
       expect(prisma.hackathon.update).toHaveBeenCalledWith({
         where: { id: 'hackathon-1' },
@@ -122,26 +134,32 @@ describe('HackathonService', () => {
       });
     });
 
-    it('should throw NotFoundException if not found', async () => {
-      await expect(service.update('invalid-id', {})).rejects.toThrow(
-        NotFoundException,
+    it('should throw ForbiddenException if not organizer', async () => {
+      mockHackathonAuthService.assertOrganizerOrAdmin.mockRejectedValueOnce(
+        new Error('Forbidden'),
       );
+      await expect(
+        service.update('hackathon-1', {}, 'other-user', 'ORGANIZER'),
+      ).rejects.toThrow();
     });
   });
 
   describe('remove', () => {
     it('should remove a hackathon if found', async () => {
-      const result = await service.remove('hackathon-1');
+      const result = await service.remove('hackathon-1', 'admin-1', 'ADMIN');
       expect(result).toEqual(mockHackathon);
       expect(prisma.hackathon.delete).toHaveBeenCalledWith({
         where: { id: 'hackathon-1' },
       });
     });
 
-    it('should throw NotFoundException if not found', async () => {
-      await expect(service.remove('invalid-id')).rejects.toThrow(
-        NotFoundException,
+    it('should throw ForbiddenException if not organizer', async () => {
+      mockHackathonAuthService.assertOrganizerOrAdmin.mockRejectedValueOnce(
+        new Error('Forbidden'),
       );
+      await expect(
+        service.remove('hackathon-1', 'other-user', 'ORGANIZER'),
+      ).rejects.toThrow();
     });
   });
 });

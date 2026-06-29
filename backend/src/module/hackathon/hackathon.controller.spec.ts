@@ -117,17 +117,19 @@ describe('HackathonController', () => {
       const dto: UpdateHackathonDto = {
         name: 'Updated Hack',
       };
-      const result = await controller.update('hackathon-1', dto);
+      const session = { user: { id: 'admin-1', role: 'ADMIN' } } as any;
+      const result = await controller.update('hackathon-1', dto, session);
       expect(result).toEqual(mockHackathon);
-      expect(service.update).toHaveBeenCalledWith('hackathon-1', dto);
+      expect(service.update).toHaveBeenCalledWith('hackathon-1', dto, 'admin-1', 'ADMIN');
     });
   });
 
   describe('remove', () => {
     it('should remove a hackathon', async () => {
-      const result = await controller.remove('hackathon-1');
+      const session = { user: { id: 'admin-1', role: 'ADMIN' } } as any;
+      const result = await controller.remove('hackathon-1', session);
       expect(result).toEqual(mockHackathon);
-      expect(service.remove).toHaveBeenCalledWith('hackathon-1');
+      expect(service.remove).toHaveBeenCalledWith('hackathon-1', 'admin-1', 'ADMIN');
     });
   });
 

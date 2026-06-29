@@ -32,6 +32,11 @@ export class SubmissionController {
     @Body() voteSubmissionDto: VoteSubmissionDto,
     @Session() session: UserSession,
   ) {
-    return this.submissionService.vote(id, session.user.id, voteSubmissionDto);
+    return this.submissionService.vote(
+      id,
+      session.user.id,
+      session.user.role as string,
+      voteSubmissionDto,
+    );
   }
 }
