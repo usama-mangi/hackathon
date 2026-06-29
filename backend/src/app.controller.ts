@@ -1,7 +1,11 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ArcjetGuard } from './common/guards/arcjet.guard';
-import { AllowAnonymous, Session, type UserSession } from '@thallesp/nestjs-better-auth';
+import {
+  AllowAnonymous,
+  Session,
+  type UserSession,
+} from '@thallesp/nestjs-better-auth';
 
 @Controller()
 @UseGuards(ArcjetGuard)
@@ -25,4 +29,3 @@ export class AppController {
     return { status: 'ok', timestamp: new Date().toISOString() };
   }
 }
-

@@ -1,7 +1,7 @@
 import { Reflector } from '@nestjs/core';
 import { ResponseInterceptor } from './response.interceptor';
 import { ExecutionContext, CallHandler } from '@nestjs/common';
-import { of } from 'rxjs';
+import { of, firstValueFrom } from 'rxjs';
 import { RESPONSE_MESSAGE_KEY } from '../decorators/response-message.decorator';
 
 describe('ResponseInterceptor', () => {
@@ -13,7 +13,7 @@ describe('ResponseInterceptor', () => {
     interceptor = new ResponseInterceptor(reflector);
   });
 
-  it('should format successful responses with status, message and data', (done) => {
+  it('should format successful responses with statusCode, message and data', async () => {
     const mockData = { id: 1, name: 'Test' };
     const mockHandler = jest.fn();
     const mockClass = jest.fn();
@@ -36,19 +36,17 @@ describe('ResponseInterceptor', () => {
 
     jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(undefined);
 
-    interceptor.intercept(mockContext, mockCallHandler).subscribe({
-      next: (val) => {
-        expect(val).toEqual({
-          status: 200,
-          message: 'success',
-          data: mockData,
-        });
-        done();
-      },
+    const val = await firstValueFrom(
+      interceptor.intercept(mockContext, mockCallHandler),
+    );
+    expect(val).toEqual({
+      statusCode: 200,
+      message: 'success',
+      data: mockData,
     });
   });
 
-  it('should use custom message from ResponseMessage decorator if present', (done) => {
+  it('should use custom message from ResponseMessage decorator if present', async () => {
     const mockData = { id: 1, name: 'Test' };
     const mockHandler = jest.fn();
     const mockClass = jest.fn();
@@ -69,25 +67,25 @@ describe('ResponseInterceptor', () => {
       handle: () => of(mockData),
     } as CallHandler;
 
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue('Custom message');
+    jest
+      .spyOn(reflector, 'getAllAndOverride')
+      .mockReturnValue('Custom message');
 
-    interceptor.intercept(mockContext, mockCallHandler).subscribe({
-      next: (val) => {
-        expect(val).toEqual({
-          status: 201,
-          message: 'Custom message',
-          data: mockData,
-        });
-        expect(reflector.getAllAndOverride).toHaveBeenCalledWith(
-          RESPONSE_MESSAGE_KEY,
-          [mockHandler, mockClass],
-        );
-        done();
-      },
+    const val = await firstValueFrom(
+      interceptor.intercept(mockContext, mockCallHandler),
+    );
+    expect(val).toEqual({
+      statusCode: 201,
+      message: 'Custom message',
+      data: mockData,
     });
+    expect(reflector.getAllAndOverride).toHaveBeenCalledWith(
+      RESPONSE_MESSAGE_KEY,
+      [mockHandler, mockClass],
+    );
   });
 
-  it('should map undefined or null data to null', (done) => {
+  it('should map undefined or null data to null', async () => {
     const mockHandler = jest.fn();
     const mockClass = jest.fn();
 
@@ -109,15 +107,13 @@ describe('ResponseInterceptor', () => {
 
     jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(undefined);
 
-    interceptor.intercept(mockContext, mockCallHandler).subscribe({
-      next: (val) => {
-        expect(val).toEqual({
-          status: 204,
-          message: 'success',
-          data: null,
-        });
-        done();
-      },
+    const val = await firstValueFrom(
+      interceptor.intercept(mockContext, mockCallHandler),
+    );
+    expect(val).toEqual({
+      statusCode: 204,
+      message: 'success',
+      data: null,
     });
   });
 });

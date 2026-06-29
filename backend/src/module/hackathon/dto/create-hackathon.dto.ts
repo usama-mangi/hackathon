@@ -1,9 +1,19 @@
-import { registerDecorator, ValidationOptions, ValidationArguments, IsString, MinLength, MaxLength, IsOptional, IsBoolean, IsDate } from 'class-validator';
+import {
+  registerDecorator,
+  ValidationOptions,
+  ValidationArguments,
+  IsString,
+  MinLength,
+  MaxLength,
+  IsOptional,
+  IsBoolean,
+  IsDate,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 // Custom validator to ensure dates are in the future
 export function IsFutureDate(validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
+  return function (object: object, propertyName: string) {
     registerDecorator({
       name: 'isFutureDate',
       target: object.constructor,
@@ -11,7 +21,11 @@ export function IsFutureDate(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any, args: ValidationArguments) {
-          return value instanceof Date && !isNaN(value.getTime()) && value > new Date();
+          return (
+            value instanceof Date &&
+            !isNaN(value.getTime()) &&
+            value > new Date()
+          );
         },
         defaultMessage(args: ValidationArguments) {
           return `${args.property} must be a future date`;

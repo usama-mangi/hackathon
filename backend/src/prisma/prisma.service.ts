@@ -18,8 +18,8 @@ export class PrismaService
     } else {
       super({
         adapter: new PrismaPg({
-          connectionString: dbUrl
-        })
+          connectionString: dbUrl,
+        }),
       });
       return this;
     }

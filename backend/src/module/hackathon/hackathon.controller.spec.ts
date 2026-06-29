@@ -7,6 +7,8 @@ jest.mock('@thallesp/nestjs-better-auth', () => ({
 import { Test, TestingModule } from '@nestjs/testing';
 import { HackathonController } from './hackathon.controller';
 import { HackathonService } from './hackathon.service';
+import { TeamService } from '../team/team.service';
+import { SubmissionService } from '../submission/submission.service';
 import { CreateHackathonDto } from './dto/create-hackathon.dto';
 import { UpdateHackathonDto } from './dto/update-hackathon.dto';
 
@@ -34,6 +36,22 @@ describe('HackathonController', () => {
     remove: jest.fn().mockResolvedValue(mockHackathon),
   };
 
+  const mockTeamService = {
+    createTeam: jest.fn(),
+    findTeamsByHackathon: jest.fn(),
+    joinTeam: jest.fn(),
+    findTeamById: jest.fn(),
+    removeMember: jest.fn(),
+  };
+
+  const mockSubmissionService = {
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    findOne: jest.fn(),
+    findSubmissionsByHackathon: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [HackathonController],
@@ -41,6 +59,14 @@ describe('HackathonController', () => {
         {
           provide: HackathonService,
           useValue: mockHackathonService,
+        },
+        {
+          provide: TeamService,
+          useValue: mockTeamService,
+        },
+        {
+          provide: SubmissionService,
+          useValue: mockSubmissionService,
         },
       ],
     }).compile();
@@ -102,6 +128,20 @@ describe('HackathonController', () => {
       const result = await controller.remove('hackathon-1');
       expect(result).toEqual(mockHackathon);
       expect(service.remove).toHaveBeenCalledWith('hackathon-1');
+    });
+  });
+
+  describe('getSubmissions', () => {
+    it('should return all submissions for a hackathon', async () => {
+      const mockSubmissions = [{ id: 'sub-1', title: 'Title' }];
+      mockSubmissionService.findSubmissionsByHackathon.mockResolvedValue(
+        mockSubmissions,
+      );
+      const result = await controller.getSubmissions('hackathon-1');
+      expect(result).toEqual(mockSubmissions);
+      expect(
+        mockSubmissionService.findSubmissionsByHackathon,
+      ).toHaveBeenCalledWith('hackathon-1');
     });
   });
 });

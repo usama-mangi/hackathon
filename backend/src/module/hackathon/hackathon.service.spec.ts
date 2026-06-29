@@ -29,7 +29,9 @@ describe('HackathonService', () => {
         }
         return Promise.resolve(null);
       }),
-      update: jest.fn().mockResolvedValue({ ...mockHackathon, name: 'Updated' }),
+      update: jest
+        .fn()
+        .mockResolvedValue({ ...mockHackathon, name: 'Updated' }),
       delete: jest.fn().mockResolvedValue(mockHackathon),
     },
   };

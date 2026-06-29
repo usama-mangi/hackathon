@@ -8,6 +8,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { auth } from './lib/auth/auth';
 import { UserModule } from './module/user/user.module';
 import { HackathonModule } from './module/hackathon/hackathon.module';
+import { SubmissionModule } from './module/submission/submission.module';
+import { TeamModule } from './module/team/team.module';
 
 @Module({
   imports: [
@@ -17,9 +19,10 @@ import { HackathonModule } from './module/hackathon/hackathon.module';
     AuthModule.forRoot({ auth }),
     UserModule,
     HackathonModule,
+    SubmissionModule,
+    TeamModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
-

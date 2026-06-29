@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, BadRequestException, ConflictException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { JoinTeamDto } from './dto/join-team.dto';
@@ -8,11 +14,15 @@ import * as crypto from 'crypto';
 export class TeamService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createTeam(hackathonId: string, leaderId: string, createTeamDto: CreateTeamDto) {
+  async createTeam(
+    hackathonId: string,
+    leaderId: string,
+    createTeamDto: CreateTeamDto,
+  ) {
     const hackathon = await this.prisma.hackathon.findUnique({
       where: { id: hackathonId },
     });
-    
+
     if (!hackathon) {
       throw new NotFoundException('Hackathon not found');
     }
@@ -32,7 +42,9 @@ export class TeamService {
     });
 
     if (!isParticipant) {
-      throw new ForbiddenException('You must join the hackathon before creating a team');
+      throw new ForbiddenException(
+        'You must join the hackathon before creating a team',
+      );
     }
 
     // Check if user is already leading a team in this hackathon
@@ -44,7 +56,9 @@ export class TeamService {
     });
 
     if (existingTeam) {
-      throw new ConflictException('You are already leading a team for this hackathon');
+      throw new ConflictException(
+        'You are already leading a team for this hackathon',
+      );
     }
 
     const inviteCode = crypto.randomBytes(4).toString('hex').toUpperCase();
@@ -77,7 +91,9 @@ export class TeamService {
     }
 
     if (!team.hackathon.isActive) {
-      throw new BadRequestException('The associated hackathon is no longer active');
+      throw new BadRequestException(
+        'The associated hackathon is no longer active',
+      );
     }
 
     if (team.inviteCode !== joinTeamDto.inviteCode) {
@@ -95,7 +111,9 @@ export class TeamService {
     });
 
     if (!isParticipant) {
-      throw new ForbiddenException('You must join the hackathon before joining a team');
+      throw new ForbiddenException(
+        'You must join the hackathon before joining a team',
+      );
     }
 
     try {
@@ -176,7 +194,9 @@ export class TeamService {
     }
 
     if (leaderId === memberUserId) {
-      throw new BadRequestException('The leader cannot remove themselves. Delete the team instead.');
+      throw new BadRequestException(
+        'The leader cannot remove themselves. Delete the team instead.',
+      );
     }
 
     const member = await this.prisma.teamMember.findUnique({

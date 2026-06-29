@@ -1,4 +1,11 @@
-import { CanActivate, ExecutionContext, Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  HttpException,
+  HttpStatus,
+  Inject,
+} from '@nestjs/common';
 import { ARCJET } from '@arcjet/nest';
 import type { ArcjetNest } from '@arcjet/nest';
 
@@ -14,7 +21,10 @@ export class ArcjetGuard implements CanActivate {
 
     if (decision.isDenied()) {
       if (decision.reason.isRateLimit()) {
-        throw new HttpException('Too Many Requests', HttpStatus.TOO_MANY_REQUESTS);
+        throw new HttpException(
+          'Too Many Requests',
+          HttpStatus.TOO_MANY_REQUESTS,
+        );
       }
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }

@@ -133,6 +133,7 @@ model Team {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  submissionUpdates Int @default(0)
 
   @@map("team")
 }
@@ -164,6 +165,7 @@ model Submission {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  @@unique([id, teamId])
   @@map("submission")
 }
 

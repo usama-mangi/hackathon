@@ -1,17 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { AllowAnonymous, Roles, Session, type UserSession } from '@thallesp/nestjs-better-auth';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+import {
+  AllowAnonymous,
+  Roles,
+  Session,
+  type UserSession,
+} from '@thallesp/nestjs-better-auth';
 import { ResponseMessage } from '../../common/decorators/response-message.decorator';
 import { HackathonService } from './hackathon.service';
 import { CreateHackathonDto } from './dto/create-hackathon.dto';
 import { UpdateHackathonDto } from './dto/update-hackathon.dto';
-import { TeamService } from './team.service';
-import { CreateTeamDto } from './dto/create-team.dto';
+import { TeamService } from '../team/team.service';
+import { CreateTeamDto } from '../team/dto/create-team.dto';
+import { SubmissionService } from '../submission/submission.service';
 
 @Controller('hackathon')
 export class HackathonController {
   constructor(
     private readonly hackathonService: HackathonService,
     private readonly teamService: TeamService,
+    private readonly submissionService: SubmissionService,
   ) {}
 
   @Post()
@@ -55,10 +70,7 @@ export class HackathonController {
 
   @Post(':id/join')
   @ResponseMessage('Successfully joined the hackathon')
-  async join(
-    @Param('id') id: string,
-    @Session() session: UserSession,
-  ) {
+  async join(@Param('id') id: string, @Session() session: UserSession) {
     return this.hackathonService.join(id, session.user.id);
   }
 
@@ -77,5 +89,12 @@ export class HackathonController {
   @ResponseMessage('Hackathon teams retrieved successfully')
   async getTeams(@Param('id') id: string) {
     return this.teamService.findTeamsByHackathon(id);
+  }
+
+  @Get(':id/submissions')
+  @AllowAnonymous()
+  @ResponseMessage('Hackathon submissions retrieved successfully')
+  async getSubmissions(@Param('id') id: string) {
+    return this.submissionService.findSubmissionsByHackathon(id);
   }
 }

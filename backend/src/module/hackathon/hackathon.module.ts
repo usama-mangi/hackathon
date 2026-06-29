@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { HackathonService } from './hackathon.service';
 import { HackathonController } from './hackathon.controller';
-import { TeamService } from './team.service';
-import { TeamController } from './team.controller';
+import { SubmissionModule } from '../submission/submission.module';
+import { TeamModule } from '../team/team.module';
 
 @Module({
-  controllers: [HackathonController, TeamController],
-  providers: [HackathonService, TeamService],
+  imports: [SubmissionModule, TeamModule],
+  controllers: [HackathonController],
+  providers: [HackathonService],
 })
 export class HackathonModule {}

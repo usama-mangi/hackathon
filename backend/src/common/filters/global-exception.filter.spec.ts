@@ -50,7 +50,9 @@ describe('GlobalExceptionFilter', () => {
 
     filter.catch(mockException, mockHost);
 
-    expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+    expect(mockResponse.status).toHaveBeenCalledWith(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
     expect(mockResponse.json).toHaveBeenCalledWith({
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       message: 'Internal server error',
@@ -62,7 +64,10 @@ describe('GlobalExceptionFilter', () => {
     const mockStatus = 400;
     const mockErrorResponse = {
       statusCode: 400,
-      message: ['email must be an email', 'password must be longer than 8 characters'],
+      message: [
+        'email must be an email',
+        'password must be longer than 8 characters',
+      ],
       error: 'Bad Request',
     };
     const mockException = new HttpException(mockErrorResponse, mockStatus);

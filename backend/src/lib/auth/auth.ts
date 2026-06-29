@@ -16,8 +16,8 @@ const prisma = dbUrl.startsWith('prisma+postgres://')
     }).$extends(withAccelerate())
   : new PrismaClient({
       adapter: new PrismaPg({
-        connectionString: dbUrl
-      })
+        connectionString: dbUrl,
+      }),
     });
 
 export const auth = betterAuth({
@@ -33,13 +33,11 @@ export const auth = betterAuth({
         before: async (user) => ({
           data: {
             ...user,
-            role: 'PARTICIPANT'
-          }
-        })
-      }
-    }
+            role: 'PARTICIPANT',
+          },
+        }),
+      },
+    },
   },
-  plugins: [
-    admin(),
-  ],
+  plugins: [admin()],
 });

@@ -1,6 +1,10 @@
 import { Module, Global } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { fixedWindow, ArcjetModule as NestArcjetModule, shield } from '@arcjet/nest';
+import {
+  fixedWindow,
+  ArcjetModule as NestArcjetModule,
+  shield,
+} from '@arcjet/nest';
 
 @Global()
 @Module({
@@ -16,11 +20,11 @@ import { fixedWindow, ArcjetModule as NestArcjetModule, shield } from '@arcjet/n
             mode: 'LIVE',
             window: '60s',
             max: 10,
-          })
+          }),
         ],
       }),
     }),
   ],
   exports: [NestArcjetModule],
 })
-export class ArcjetModule { }
+export class ArcjetModule {}

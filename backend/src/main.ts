@@ -5,11 +5,16 @@ import { AppModule } from './app.module';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
-function formatErrors(errors: ValidationError[], parentProperty = ''): { property: string; message: string }[] {
+function formatErrors(
+  errors: ValidationError[],
+  parentProperty = '',
+): { property: string; message: string }[] {
   const formatted: { property: string; message: string }[] = [];
 
   for (const error of errors) {
-    const propertyPath = parentProperty ? `${parentProperty}.${error.property}` : error.property;
+    const propertyPath = parentProperty
+      ? `${parentProperty}.${error.property}`
+      : error.property;
 
     if (error.constraints) {
       formatted.push({
@@ -49,5 +54,3 @@ async function bootstrap() {
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
-
-
