@@ -20,6 +20,8 @@ import { UpdateHackathonDto } from './dto/update-hackathon.dto';
 import { TeamService } from '../team/team.service';
 import { CreateTeamDto } from '../team/dto/create-team.dto';
 import { SubmissionService } from '../submission/submission.service';
+import { EventService } from '../event/event.service';
+import { CreateEventDto } from '../event/dto/create-event.dto';
 
 @Controller('hackathon')
 export class HackathonController {
@@ -27,6 +29,7 @@ export class HackathonController {
     private readonly hackathonService: HackathonService,
     private readonly teamService: TeamService,
     private readonly submissionService: SubmissionService,
+    private readonly eventService: EventService,
   ) {}
 
   @Post()
@@ -96,6 +99,23 @@ export class HackathonController {
   @ResponseMessage('Hackathon submissions retrieved successfully')
   async getSubmissions(@Param('id') id: string) {
     return this.submissionService.findSubmissionsByHackathon(id);
+  }
+
+  @Post(':id/events')
+  @Roles(['ADMIN'])
+  @ResponseMessage('Event added successfully')
+  async createEvent(
+    @Param('id') id: string,
+    @Body() createEventDto: CreateEventDto,
+  ) {
+    return this.eventService.createEvent(id, createEventDto);
+  }
+
+  @Get(':id/events')
+  @AllowAnonymous()
+  @ResponseMessage('Hackathon events retrieved successfully')
+  async getEvents(@Param('id') id: string) {
+    return this.eventService.getEventsByHackathon(id);
   }
 
   @Get(':id/results')

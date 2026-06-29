@@ -10,6 +10,7 @@ import { UserModule } from './module/user/user.module';
 import { HackathonModule } from './module/hackathon/hackathon.module';
 import { SubmissionModule } from './module/submission/submission.module';
 import { TeamModule } from './module/team/team.module';
+import { EventModule } from './module/event/event.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TeamModule } from './module/team/team.module';
     HackathonModule,
     SubmissionModule,
     TeamModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService],
