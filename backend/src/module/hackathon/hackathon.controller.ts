@@ -24,6 +24,7 @@ import { EventService } from '../event/event.service';
 import { CreateEventDto } from '../event/dto/create-event.dto';
 import { AnnoucementService } from '../annoucement/annoucement.service';
 import { CreateAnnouncementDto } from '../annoucement/dto/create-announcement.dto';
+import { TicketService } from '../ticket/ticket.service';
 
 @Controller('hackathon')
 export class HackathonController {
@@ -33,6 +34,7 @@ export class HackathonController {
     private readonly submissionService: SubmissionService,
     private readonly eventService: EventService,
     private readonly annoucementService: AnnoucementService,
+    private readonly ticketService: TicketService,
   ) {}
 
   @Post()
@@ -143,5 +145,12 @@ export class HackathonController {
   @ResponseMessage('Hackathon announcements retrieved successfully')
   async getAnnouncements(@Param('id') id: string) {
     return this.annoucementService.getAnnouncementsByHackathon(id);
+  }
+
+  @Get(':id/tickets')
+  @Roles(['ADMIN'])
+  @ResponseMessage('Open tickets retrieved successfully')
+  async getTickets(@Param('id') id: string) {
+    return this.ticketService.getTicketsByHackathon(id);
   }
 }

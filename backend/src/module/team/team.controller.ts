@@ -14,12 +14,15 @@ import { JoinTeamDto } from './dto/join-team.dto';
 import { SubmissionService } from '../submission/submission.service';
 import { CreateSubmissionDto } from '../submission/dto/create-submission.dto';
 import { UpdateSubmissionDto } from '../submission/dto/update-submission.dto';
+import { TicketService } from '../ticket/ticket.service';
+import { CreateTicketDto } from '../ticket/dto/create-ticket.dto';
 
 @Controller('teams')
 export class TeamController {
   constructor(
     private readonly teamService: TeamService,
     private readonly submissionService: SubmissionService,
+    private readonly ticketService: TicketService,
   ) {}
 
   @Post(':teamId/join')
@@ -74,5 +77,15 @@ export class TeamController {
       session.user.id,
       updateSubmissionDto,
     );
+  }
+
+  @Post(':id/tickets')
+  @ResponseMessage('Help request submitted successfully')
+  async requestHelp(
+    @Param('id') teamId: string,
+    @Body() createTicketDto: CreateTicketDto,
+    @Session() session: UserSession,
+  ) {
+    return this.ticketService.createTicket(teamId, session.user.id, createTicketDto);
   }
 }
