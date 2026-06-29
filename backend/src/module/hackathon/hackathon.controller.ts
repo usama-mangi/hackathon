@@ -22,6 +22,8 @@ import { CreateTeamDto } from '../team/dto/create-team.dto';
 import { SubmissionService } from '../submission/submission.service';
 import { EventService } from '../event/event.service';
 import { CreateEventDto } from '../event/dto/create-event.dto';
+import { AnnoucementService } from '../annoucement/annoucement.service';
+import { CreateAnnouncementDto } from '../annoucement/dto/create-announcement.dto';
 
 @Controller('hackathon')
 export class HackathonController {
@@ -30,6 +32,7 @@ export class HackathonController {
     private readonly teamService: TeamService,
     private readonly submissionService: SubmissionService,
     private readonly eventService: EventService,
+    private readonly annoucementService: AnnoucementService,
   ) {}
 
   @Post()
@@ -123,5 +126,22 @@ export class HackathonController {
   @ResponseMessage('Leaderboard retrieved successfully')
   async getResults(@Param('id') id: string) {
     return this.hackathonService.getResults(id);
+  }
+
+  @Post(':id/announcements')
+  @Roles(['ADMIN'])
+  @ResponseMessage('Announcement created successfully')
+  async createAnnouncement(
+    @Param('id') id: string,
+    @Body() createAnnouncementDto: CreateAnnouncementDto,
+  ) {
+    return this.annoucementService.createAnnouncement(id, createAnnouncementDto);
+  }
+
+  @Get(':id/announcements')
+  @AllowAnonymous()
+  @ResponseMessage('Hackathon announcements retrieved successfully')
+  async getAnnouncements(@Param('id') id: string) {
+    return this.annoucementService.getAnnouncementsByHackathon(id);
   }
 }
