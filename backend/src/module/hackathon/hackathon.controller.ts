@@ -3,9 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import {
   AllowAnonymous,
@@ -59,7 +59,7 @@ export class HackathonController {
     return this.hackathonService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @Roles(['ADMIN', 'ORGANIZER'])
   @ResponseMessage('Hackathon updated successfully')
   async update(
@@ -158,7 +158,7 @@ export class HackathonController {
   }
 
   @Get(':id/tickets')
-  @Roles(['ADMIN', 'ORGANIZER'])
+  @Roles(['ADMIN', 'ORGANIZER', 'PARTICIPANT'])
   @ResponseMessage('Open tickets retrieved successfully')
   async getTickets(@Param('id') id: string, @Session() session: UserSession) {
     return this.ticketService.getTicketsByHackathon(

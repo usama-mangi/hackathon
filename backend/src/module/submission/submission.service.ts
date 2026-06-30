@@ -219,7 +219,7 @@ export class SubmissionService {
     }
 
     // Only ADMIN or a confirmed hackathon Judge may vote
-    await this.hackathonAuth.assertJudgeOrAdmin(
+    await this.hackathonAuth.assertJudgeOrganizerOrAdmin(
       submission.team.hackathonId,
       userId,
       userRole,

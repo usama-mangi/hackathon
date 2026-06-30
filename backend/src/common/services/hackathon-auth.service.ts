@@ -69,18 +69,21 @@ export class HackathonAuthService {
   /**
    * Throws ForbiddenException unless user is ADMIN or a hackathon Judge.
    */
-  async assertJudgeOrAdmin(
+  async assertJudgeOrganizerOrAdmin(
     hackathonId: string,
     userId: string,
     userRole: string,
   ): Promise<void> {
-    if (userRole === 'ADMIN') return;
-
     const isJudge = await this.isHackathonJudge(hackathonId, userId);
-    if (!isJudge) {
-      throw new ForbiddenException(
-        'Only admins or assigned judges can vote on submissions',
-      );
+    
+    try{
+      if(!isJudge) {
+        await this.assertOrganizerOrAdmin(hackathonId, userId, userRole);
+      }
+    } catch(error) {
+        throw new ForbiddenException(
+          'Only admins, organizers or assigned judges can vote on submissions',
+        );
     }
   }
 
