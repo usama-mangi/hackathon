@@ -14,6 +14,7 @@ import { EventModule } from './module/event/event.module';
 import { AnnoucementModule } from './module/annoucement/annoucement.module';
 import { TicketModule } from './module/ticket/ticket.module';
 import { ApplicationModule } from './module/application/application.module';
+import { CertificateModule } from './module/certificate/certificate.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ApplicationModule } from './module/application/application.module';
     AnnoucementModule,
     TicketModule,
     ApplicationModule,
+    CertificateModule,
   ],
   controllers: [AppController],
   providers: [AppService],

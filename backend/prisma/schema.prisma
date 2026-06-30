@@ -38,6 +38,7 @@ model User {
   roleApplications    HackathonRoleApplication[]
   hackathonMentorships HackathonMentor[]
   hackathonJudgeships  HackathonJudge[]
+  certificates    Certificate[]
 
   @@map("user")
 }
@@ -59,6 +60,7 @@ model Hackathon {
   applications HackathonRoleApplication[]
   mentors      HackathonMentor[]
   judges       HackathonJudge[]
+  certificates Certificate[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -302,4 +304,40 @@ model HackathonJudge {
 
   @@unique([hackathonId, userId])
   @@map("hackathon_judge")
+}
+
+// ---------------------------------------------------------------------------
+// Digital Certificates
+// ---------------------------------------------------------------------------
+
+model Certificate {
+  id            String    @id @default(uuid())
+
+  /// Public verification token — URL-safe, human-readable.
+  /// Format: {first4ofHackathonId}-{chars5-8ofUserId}-{8 random hex uppercase}
+  /// Example: "A1B2-C3D4-EF012345"
+  certificateId String    @unique
+
+  hackathonId   String
+  userId        String
+
+  /// Snapshot of user.name at issuance time — remains valid after renames
+  recipientName String
+  /// Snapshot of hackathon.name at issuance time
+  hackathonName String
+
+  /// 'PARTICIPANT' | 'MENTOR' | 'JUDGE'
+  type          String
+
+  /// Winner placement: 1, 2, or 3 for top-3 participant teams; null otherwise
+  placement     Int?
+
+  issuedAt      DateTime  @default(now())
+
+  hackathon     Hackathon @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// One certificate per role per hackathon per user
+  @@unique([hackathonId, userId, type])
+  @@map("certificate")
 }
