@@ -72,6 +72,7 @@ export default function SignUpPage() {
         password,
         name,
         signupRole: role,
+        callbackURL: typeof window !== "undefined" ? `${window.location.origin}/dashboard` : "/dashboard",
       });
 
       if (error) {

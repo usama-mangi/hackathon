@@ -1,6 +1,6 @@
 # Memory — Next.js Auth Pages Group Setup
 
-Last updated: July 7, 2026, 9:08 PM
+Last updated: July 7, 2026, 11:59 PM
 
 ## What was built
 - Created the Better Auth client configuration in [auth-client.ts](file:///home/usama/Projects/hackathon/frontend/src/lib/auth-client.ts).
@@ -13,6 +13,9 @@ Last updated: July 7, 2026, 9:08 PM
 - Updated the root [page.tsx](file:///home/usama/Projects/hackathon/frontend/app/page.tsx) to implement core routing that checks the active user session and redirects to `/dashboard` or `/sign-in` dynamically.
 - Configured dynamic CORS in the NestJS backend ([main.ts](file:///home/usama/Projects/hackathon/backend/src/main.ts)) to accept requests from `http://localhost:3000` in development mode, and from `FRONTEND_URL` in production mode, enabling credentials.
 - Configured `trustedOrigins` in the Better Auth server setup ([auth.ts](file:///home/usama/Projects/hackathon/backend/src/lib/auth/auth.ts)) to trust the frontend origin (`http://localhost:3000` in dev or `FRONTEND_URL` in prod) for cross-domain requests.
+- Created global NestJS [MailModule](file:///home/usama/Projects/hackathon/backend/src/lib/mail/mail.module.ts) and [MailService](file:///home/usama/Projects/hackathon/backend/src/lib/mail/mail.service.ts) using the Resend SDK with a console logging fallback for development when `RESEND_API_KEY` is not present.
+- Integrated the mail dispatch pipeline with Better Auth `emailVerification` lifecycle hooks in the backend configuration ([auth.ts](file:///home/usama/Projects/hackathon/backend/src/lib/auth/auth.ts)). Enforced email verification requirement for login (`requireEmailVerification: true`).
+- Configured absolute `callbackURL` generation using `window.location.origin` inside both [sign-up/page.tsx](file:///home/usama/Projects/hackathon/frontend/app/(auth)/sign-up/page.tsx) and [verify-email/page.tsx](file:///home/usama/Projects/hackathon/frontend/app/(auth)/verify-email/page.tsx) client forms. This forces Better Auth verification redirects to land on the frontend host (e.g. `http://localhost:3000/dashboard`) instead of the backend host.
 
 ## Decisions made
 - Adopted **Zod** as the standard form validation library across the project, documented in `GEMINI.md` rules.
@@ -21,6 +24,8 @@ Last updated: July 7, 2026, 9:08 PM
 - Resolved type safety issues by casting specific better-auth methods (like custom sign-up properties) to bypass strict baseline client interface definitions.
 - Allowed Cross-Origin Resource Sharing (CORS) with `credentials: true` on the NestJS backend to support session cookie storage and validation across domains.
 - Whitelisted the frontend origin in the Better Auth server configuration using the `trustedOrigins` setting.
+- Deployed a hybrid design pattern to integrate NestJS dependency-injected services (`MailService` singleton instance) within the statically loaded Better Auth lifecycle handlers.
+- Used absolute `callbackURL` parameters derived dynamically from the browser context to cleanly map cross-host success redirects.
 
 ## Problems solved
 - Installed the `zod` dependency.
@@ -29,9 +34,11 @@ Last updated: July 7, 2026, 9:08 PM
 - Fixed the missing icon compilation error in `DashboardLayout.tsx` by removing the unexported `Lightning` member from `lucide-react`.
 - Resolved frontend-backend CORS blocks by enabling express-adapter CORS dynamically.
 - Solved the Better Auth `Invalid origin` error by configuring `trustedOrigins`.
+- Implemented and resolved email verification pipeline by integrating the new `MailModule` and handling dev fallbacks.
+- Fixed relative redirection URL routing (which fetched `localhost:4000/dashboard` on the backend) by passing absolute frontend URLs to `callbackURL`.
 
 ## Current state
-- The authentication frontend module, root redirect logic, backend CORS configuration, and Better Auth `trustedOrigins` setup are complete and successfully compile with zero errors.
+- The authentication frontend module, root redirect logic, backend CORS configuration, Better Auth `trustedOrigins` setup, backend email verification mail pipeline, and absolute verification redirects are fully built and compile successfully.
 
 ## Next session starts with
 - Setting up protected routing or page middleware checks to redirect unauthorized sessions to `/sign-in`.

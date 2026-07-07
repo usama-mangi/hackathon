@@ -26,7 +26,7 @@ function VerifyEmailContent() {
     try {
       const { data, error } = await authClient.sendVerificationEmail({
         email,
-        callbackURL: "/dashboard",
+        callbackURL: typeof window !== "undefined" ? `${window.location.origin}/dashboard` : "/dashboard",
       });
 
       if (error) {

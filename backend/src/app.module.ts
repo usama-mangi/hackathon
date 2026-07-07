@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { ArcjetModule } from './lib/arcjet/arcjet.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { auth } from './lib/auth/auth';
+import { MailModule } from './lib/mail/mail.module';
 import { UserModule } from './module/user/user.module';
 import { HackathonModule } from './module/hackathon/hackathon.module';
 import { SubmissionModule } from './module/submission/submission.module';
@@ -21,6 +22,7 @@ import { CertificateModule } from './module/certificate/certificate.module';
     ConfigModule.forRoot({ isGlobal: true }),
     ArcjetModule,
     PrismaModule,
+    MailModule,
     AuthModule.forRoot({ auth }),
     UserModule,
     HackathonModule,

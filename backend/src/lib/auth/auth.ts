@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { withAccelerate } from '@prisma/extension-accelerate';
 import { admin } from 'better-auth/plugins/admin';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { MailService } from '../mail/mail.service';
 
 import { createAuthMiddleware } from 'better-auth/api';
 
@@ -25,6 +26,22 @@ const prisma = dbUrl.startsWith('prisma+postgres://')
 export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url, token }) => {
+      const mailService = MailService.getInstance();
+      if (mailService) {
+        await mailService.sendVerificationEmail(user.email, user.name, url);
+      } else {
+        console.log('\n' + '='.repeat(80));
+        console.log(`[DEVELOPMENT EMAIL VERIFICATION PIPELINE - MailService NOT INITIALIZED]`);
+        console.log(`TO: ${user.name} <${user.email}>`);
+        console.log(`LINK: ${url}`);
+        console.log('='.repeat(80) + '\n');
+      }
+    },
   },
   database: prismaAdapter(prisma as any, {
     provider: 'postgresql',
