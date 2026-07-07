@@ -29,6 +29,9 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma as any, {
     provider: 'postgresql',
   }),
+  trustedOrigins: [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+  ],
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
       // Intercept signup endpoint to extract user role if specified by client

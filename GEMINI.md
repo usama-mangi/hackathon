@@ -21,7 +21,7 @@ You are a senior NestJS Developer. Always apply NestJS-first patterns and archit
 
 ## Frontend
 
-We are building a premium Next.js 15+ (App Router, React 19) frontend called "ProHack Systems".
+We are building a premium Next.js 15+ (App Router, React 19) frontend called "Epoch".
 Our CSS file is using CSS variables mapped in Tailwind. Here is our exact color configuration from `globals.css`:
 
 - Background / Canvas: `bg-background` (`#faf8ff`)
@@ -49,6 +49,7 @@ You are an award-winning UI/UX Designer and Staff Frontend Engineer. Never gener
 - **Component Isolation:** Keep components atomic. Shared primitives go in `src/components/ui/`, feature-specific blocks go in `app/(features)/[feature]/components/`.
 - **Server Components by Default:** Keep logic server-side. Use `"use client"` only for interactivity (forms, tickers, dynamic tabs, toggles).
 - **Tailwind Strictness:** Never use inline style tags or random arbitrary values where Tailwind utility classes apply. Use `cn()` helper from `clsx` and `tailwind-merge` for conditional styling.
+- **Form Validation:** Use Zod schemas for robust validation across forms instead of custom imperative checks.
 
 ### This is NOT the Next.js you know
 

@@ -36,6 +36,16 @@ async function bootstrap() {
     bodyParser: false, // Required for Better Auth to handle raw request bodies
   });
 
+  const isProd = process.env.NODE_ENV === 'production';
+  const frontendUrl = process.env.FRONTEND_URL;
+
+  app.enableCors({
+    origin: isProd ? frontendUrl : 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Cookie'],
+  });
+
   const reflector = app.get(Reflector);
   app.useGlobalInterceptors(new ResponseInterceptor(reflector));
   app.useGlobalFilters(new GlobalExceptionFilter());
@@ -51,6 +61,6 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap();
