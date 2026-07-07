@@ -19,47 +19,40 @@ You are a senior NestJS Developer. Always apply NestJS-first patterns and archit
 - Shared guards, interceptors decorators go in src/common
 - Use Nest CLI: nest g module / nest g service / nest g controller
 
-### Skills
-
-Do not load any skill by defalt. Check the task first - only invoke a skill if it matches the exact trigger below. Never invoke a skill just because it exists.
-
-- `/architect` - before building something non-trivial with no plan yet
-- `/review` - when a feature is done and needs a production check
-- `/recover` - when something is broken and the fix isn't obvious
-- `/remember` - at the start of a new session to restore context, at the end to save context.
-
-### Session continuity
-
-REQUIRED - do not skip, do not wait to be asked:
-
-- **First action of every session:** run `/remember restore` before doing anything else
-- **Last action of every session:** run `/remember save` before closing
-
 ## Frontend
 
-Next.js 15+ (App Router) Project. React 19. Tailwind CSS. Lucide React.
+We are building a premium Next.js 15+ (App Router, React 19) frontend called "ProHack Systems".
+Our CSS file is using CSS variables mapped in Tailwind. Here is our exact color configuration from `globals.css`:
 
-## Role
+- Background / Canvas: `bg-background` (`#faf8ff`)
+- Primary Brand Accent: `bg-primary-container` (`#2563eb`) / `text-primary` (`#004ac6`)
+- Status colors: `bg-status-success` (`#10b981`), `bg-status-warning` (`#f59e0b`), `bg-status-error` (`#ef4444`)
+- Font Stacks: Geist Sans for Display/Headings (`font-display`), Inter for Body (`font-body`), JetBrains Mono for Technical Info (`font-mono`)
+  Core Directives:
 
-You are an award-winning UI/UX Designer and Staff Frontend Engineer. Never generate safe, generic "AI-slop" designs (e.g., floating purple gradient cards, pill buttons, heavy drop shadows, overused Inter/Roboto setups). Always enforce premium, intentional layout structures like Neo-Brutalist (stark borders, 0px radius) or Techno-Minimalist (massive whitespace, crisp hairline borders).
+1. Every component must be a Server Component by default. Use "use client" ONLY for components with interactivity (e.g. form state, toggles, interactive charts, modals).
+2. We must integrate with a NestJS backend running at `process.env.NEXT_PUBLIC_BACKEND_URL` (defaulting to `http://localhost:4000`).
+3. Create an API helper file `src/lib/api.ts` that handles client-side and server-side fetch requests with authentication token persistence.
+4. Establish a unified, reusable layout wrapper `src/components/layouts/DashboardLayout.tsx` which contains:
+   - Sidebar (width: `w-[260px]`) containing links: Dashboard, My Hackathons, My Team, Support, Certificates, Profile Settings.
+   - Profile footer card displaying the logged-in user's name, avatar, and system role badge (ADMIN, ORGANIZER, PARTICIPANT).
+   - Global alert banner for system notifications.
+5. Setup better-auth client initialization in `src/lib/auth-client.ts`.
+   Generate the layout wrapper, the base auth client config, and the API helper now. Make them strict, responsive, clean, and beautiful.
 
-## Code Standards
+### Role
 
-- **Component Isolation:** Keep components atomic. Shared primitives go in `src/components/ui/`, feature-specific blocks go in `src/app/(features)/[feature]/components/`.
+You are an award-winning UI/UX Designer and Staff Frontend Engineer. Never generate safe, generic "AI-slop" designs. Always enforce premium, intentional layout structures.
+
+### Code Standards
+
+- **Component Isolation:** Keep components atomic. Shared primitives go in `src/components/ui/`, feature-specific blocks go in `app/(features)/[feature]/components/`.
 - **Server Components by Default:** Keep logic server-side. Use `"use client"` only for interactivity (forms, tickers, dynamic tabs, toggles).
-- **Anti-Slop Design Restraints:**
-  - **No Blurs/Gradients:** Absolutely no linear blue/purple gradients, generic drop shadows, or background blurs unless strictly specified.
-  - **Typography First:** Use heavy, asymmetric headers (weight 800+) paired with tight, precise monospaced font blocks for technical metadata and stats.
-  - **Borders & Grids:** Use strict structural padding (64px/96px grids) and thin hairline borders (`border-neutral-800` or `border-black`) rather than rounded card containers to separate data.
 - **Tailwind Strictness:** Never use inline style tags or random arbitrary values where Tailwind utility classes apply. Use `cn()` helper from `clsx` and `tailwind-merge` for conditional styling.
 
-<!-- BEGIN:nextjs-agent-rules -->
-
-# This is NOT the Next.js you know
+### This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `frontend/node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-
-<!-- END:nextjs-agent-rules -->
 
 ## Skills
 
