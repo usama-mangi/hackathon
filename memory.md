@@ -1,9 +1,9 @@
 # Memory — Next.js Auth Pages Group Setup
 
-Last updated: July 7, 2026, 11:59 PM
+Last updated: July 8, 2026, 12:17 AM
 
 ## What was built
-- Created the Better Auth client configuration in [auth-client.ts](file:///home/usama/Projects/hackathon/frontend/src/lib/auth-client.ts).
+- Created the Better Auth client configuration in [auth-client.ts](file:///home/usama/Projects/hackathon/frontend/src/lib/auth-client.ts) and exported key authentication methods including `requestPasswordReset`.
 - Created the API fetch utility in [api.ts](file:///home/usama/Projects/hackathon/frontend/src/lib/api.ts) with SSR dynamic header/cookie forwarding.
 - Created the reusable main dashboard template wrapper in [DashboardLayout.tsx](file:///home/usama/Projects/hackathon/frontend/src/components/layouts/DashboardLayout.tsx).
 - Implemented credentials validation and error/loading states on the [Sign-In](file:///home/usama/Projects/hackathon/frontend/app/(auth)/sign-in/page.tsx) and [Sign-Up](file:///home/usama/Projects/hackathon/frontend/app/(auth)/sign-up/page.tsx) pages using **Zod schemas** (`signInSchema` and `signUpSchema`).
@@ -16,6 +16,10 @@ Last updated: July 7, 2026, 11:59 PM
 - Created global NestJS [MailModule](file:///home/usama/Projects/hackathon/backend/src/lib/mail/mail.module.ts) and [MailService](file:///home/usama/Projects/hackathon/backend/src/lib/mail/mail.service.ts) using the Resend SDK with a console logging fallback for development when `RESEND_API_KEY` is not present.
 - Integrated the mail dispatch pipeline with Better Auth `emailVerification` lifecycle hooks in the backend configuration ([auth.ts](file:///home/usama/Projects/hackathon/backend/src/lib/auth/auth.ts)). Enforced email verification requirement for login (`requireEmailVerification: true`).
 - Configured absolute `callbackURL` generation using `window.location.origin` inside both [sign-up/page.tsx](file:///home/usama/Projects/hackathon/frontend/app/(auth)/sign-up/page.tsx) and [verify-email/page.tsx](file:///home/usama/Projects/hackathon/frontend/app/(auth)/verify-email/page.tsx) client forms. This forces Better Auth verification redirects to land on the frontend host (e.g. `http://localhost:3000/dashboard`) instead of the backend host.
+- Built [forgot-password/page.tsx](file:///home/usama/Projects/hackathon/frontend/app/(auth)/forgot-password/page.tsx) page with validation and `requestPasswordReset` dispatch logic mapping to absolute redirects pointing to `/reset-password`.
+- Built [reset-password/page.tsx](file:///home/usama/Projects/hackathon/frontend/app/(auth)/reset-password/page.tsx) page with token query param extraction, suspense boundary safety, and `authClient.resetPassword` execution.
+- Added password reset email templates (`sendResetPasswordEmail`) to NestJS backend `MailService` and linked `sendResetPassword` callback inside `auth.ts` options.
+- Linked "Forgot password?" link on [sign-in/page.tsx](file:///home/usama/Projects/hackathon/frontend/app/(auth)/sign-in/page.tsx) to point to `/forgot-password`.
 
 ## Decisions made
 - Adopted **Zod** as the standard form validation library across the project, documented in `GEMINI.md` rules.
@@ -36,9 +40,11 @@ Last updated: July 7, 2026, 11:59 PM
 - Solved the Better Auth `Invalid origin` error by configuring `trustedOrigins`.
 - Implemented and resolved email verification pipeline by integrating the new `MailModule` and handling dev fallbacks.
 - Fixed relative redirection URL routing (which fetched `localhost:4000/dashboard` on the backend) by passing absolute frontend URLs to `callbackURL`.
+- Identified that `requestPasswordReset` is the correct client method mapping for password resets in this version of Better Auth client.
+- Fixed TypeScript compile errors on `treeifyError` structure properties access by utilizing optional chaining.
 
 ## Current state
-- The authentication frontend module, root redirect logic, backend CORS configuration, Better Auth `trustedOrigins` setup, backend email verification mail pipeline, and absolute verification redirects are fully built and compile successfully.
+- The complete authentication frontend module (Sign In, Sign Up, Verify Email, Forgot Password, Reset Password), root redirect logic, backend CORS configuration, Better Auth `trustedOrigins` setup, and backend email/password reset verification mail pipelines are fully built and compile successfully.
 
 ## Next session starts with
 - Setting up protected routing or page middleware checks to redirect unauthorized sessions to `/sign-in`.

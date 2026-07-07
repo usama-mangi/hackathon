@@ -27,6 +27,18 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    sendResetPassword: async ({ user, url, token }) => {
+      const mailService = MailService.getInstance();
+      if (mailService) {
+        await mailService.sendResetPasswordEmail(user.email, user.name, url);
+      } else {
+        console.log('\n' + '='.repeat(80));
+        console.log(`[DEVELOPMENT PASSWORD RESET PIPELINE - MailService NOT INITIALIZED]`);
+        console.log(`TO: ${user.name} <${user.email}>`);
+        console.log(`LINK: ${url}`);
+        console.log('='.repeat(80) + '\n');
+      }
+    },
   },
   emailVerification: {
     sendOnSignUp: true,

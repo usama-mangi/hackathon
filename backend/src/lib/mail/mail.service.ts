@@ -64,4 +64,47 @@ export class MailService {
 
     return true;
   }
+
+  async sendResetPasswordEmail(email: string, name: string, url: string): Promise<boolean> {
+    const subject = 'Reset your password';
+    const html = `
+      <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+        <h2 style="color: #2563eb;">Reset your password</h2>
+        <p>Hello ${name},</p>
+        <p>We received a request to reset your password on ProHack. Please click the button below to reset your password:</p>
+        <div style="margin: 24px 0;">
+          <a href="${url}" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Reset Password</a>
+        </div>
+        <p style="font-size: 12px; color: #64748b;">If the button doesn't work, you can copy and paste the following link into your browser:</p>
+        <p style="font-size: 12px; color: #2563eb; word-break: break-all;">${url}</p>
+        <p style="font-size: 12px; color: #64748b; margin-top: 20px;">If you did not request a password reset, you can safely ignore this email.</p>
+      </div>
+    `;
+
+    if (this.resend) {
+      try {
+        const fromEmail = this.configService.get<string>('MAIL_FROM') || 'ProHack <onboarding@resend.dev>';
+        await this.resend.emails.send({
+          from: fromEmail,
+          to: email,
+          subject,
+          html,
+        });
+        this.logger.log(`Password reset email successfully sent to ${email} via Resend.`);
+        return true;
+      } catch (error) {
+        this.logger.error(`Failed to send password reset email to ${email} via Resend`, error);
+      }
+    }
+
+    // Fallback: beautiful terminal console log
+    console.log('\n' + '='.repeat(80));
+    console.log(`[DEVELOPMENT PASSWORD RESET PIPELINE]`);
+    console.log(`TO: ${name} <${email}>`);
+    console.log(`SUBJECT: ${subject}`);
+    console.log(`LINK: ${url}`);
+    console.log('='.repeat(80) + '\n');
+
+    return true;
+  }
 }
