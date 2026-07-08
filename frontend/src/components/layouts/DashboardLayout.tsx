@@ -13,7 +13,12 @@ import {
   LogOut,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  Calendar,
+  Megaphone,
+  Ticket,
+  FileText,
+  LayoutGrid
 } from "lucide-react";
 
 interface DashboardLayoutProps {
@@ -23,19 +28,53 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: session, isPending } = useSession();
+  const { data: session } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [alertBanner, setAlertBanner] = useState<string | null>(
     "Welcome to Epoch! Complete your profile to join upcoming hackathons."
   );
 
-  const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "My Hackathons", href: "/my-hackathons", icon: Trophy },
-    { name: "My Team", href: "/teams", icon: Users },
-    { name: "Certificates", href: "/certificates", icon: Award },
-    { name: "Profile Settings", href: "/profile", icon: Settings },
-  ];
+  // Get user role with a fallback. Cast user to any since we added custom role field.
+  const userRole = (session?.user as any)?.role || "PARTICIPANT";
+  const userName = session?.user?.name || "Anonymous User";
+  const userEmail = session?.user?.email || "";
+  const userImage = session?.user?.image;
+
+  let navigation = [];
+  
+  if (userRole === "ORGANIZER" || userRole === "ADMIN") {
+    // Check if path contains a hackathon ID context: /organizer/hackathons/[id]/...
+    const match = pathname.match(/^\/organizer\/hackathons\/([^/]+)/);
+    const hackathonId = match && match[1] !== "create" ? match[1] : null;
+
+    if (hackathonId) {
+      navigation = [
+        { name: "All Hackathons", href: "/organizer/hackathons", icon: LayoutDashboard },
+        { name: "Applications", href: `/organizer/hackathons/${hackathonId}/applications`, icon: Users },
+        { name: "Teams", href: `/organizer/hackathons/${hackathonId}/teams`, icon: LayoutGrid },
+        { name: "Events & Schedule", href: `/organizer/hackathons/${hackathonId}/events`, icon: Calendar },
+        { name: "Announcements", href: `/organizer/hackathons/${hackathonId}/announcements`, icon: Megaphone },
+        { name: "Support Tickets", href: `/organizer/hackathons/${hackathonId}/tickets`, icon: Ticket },
+        { name: "Submissions", href: `/organizer/hackathons/${hackathonId}/submissions`, icon: FileText },
+        { name: "Leaderboard & Results", href: `/organizer/hackathons/${hackathonId}/results`, icon: Trophy },
+        { name: "Certificates", href: `/organizer/hackathons/${hackathonId}/certificates`, icon: Award },
+        { name: "Profile Settings", href: "/profile", icon: Settings },
+      ];
+    } else {
+      navigation = [
+        { name: "Organizer Dashboard", href: "/organizer/hackathons", icon: LayoutDashboard },
+        { name: "Profile Settings", href: "/profile", icon: Settings },
+      ];
+    }
+  } else {
+    navigation = [
+      { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { name: "My Hackathons", href: "/my-hackathons", icon: Trophy },
+      { name: "My Team", href: "/teams", icon: Users },
+      { name: "Certificates", href: "/certificates", icon: Award },
+      { name: "Profile Settings", href: "/profile", icon: Settings },
+    ];
+  }
 
   const handleSignOut = async () => {
     try {
@@ -45,12 +84,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       console.error("Sign out failed", error);
     }
   };
-
-  // Get user role with a fallback. Cast user to any since we added custom role field.
-  const userRole = (session?.user as any)?.role || "PARTICIPANT";
-  const userName = session?.user?.name || "Anonymous User";
-  const userEmail = session?.user?.email || "";
-  const userImage = session?.user?.image;
 
   // Determine badge colors based on role
   const getRoleBadgeClass = (role: string) => {

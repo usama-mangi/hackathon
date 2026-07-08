@@ -1,41 +1,43 @@
-# Memory — Participant Dashboard & Team Workspace
+# Memory — Organizer Dashboard & Event Management
 
-Last updated: July 8, 2026, 9:45 AM
+Last updated: July 8, 2026, 11:04 AM
 
 ## What was built
 
-- Created the participant route group layout in `app/(participant)/layout.tsx` to wrap pages in `DashboardLayout`.
-- Developed the Personal Dashboard in `app/(participant)/dashboard/page.tsx` featuring dynamic stats cards and a list of registered hackathons.
-- Implemented the Join Hackathon page in `app/(participant)/hackathon/[id]/join/page.tsx` with role checking and redirection logic.
-- Crafted the Mentor / Judge application wizard in `app/(participant)/hackathons/[id]/apply/page.tsx` with role-specific forms and Zod schemas.
-- Set up team creation inside hackathons in `app/(participant)/hackathons/[id]/teams/create/page.tsx`.
-- Designed the Team Workspace Hub in `app/(participant)/teams/[id]/page.tsx` showing members, copied invite code, support tickets, and submission links.
-- Constructed the Submission Builder in `app/(participant)/teams/[id]/submission/page.tsx` with auto-save (debounced) and update counter constraints.
-- Integrated Support Ticket creation in `app/(participant)/teams/[id]/tickets/page.tsx`.
-- Built the join team verification page in `app/(participant)/teams/[id]/join/page.tsx`.
-- Created Profile Settings update views in `app/(participant)/profile/page.tsx`.
-- Built the Certificates list page in `app/(participant)/certificates/page.tsx`.
-- Created the user-specific registered hackathons view in `app/(participant)/my-hackathons/page.tsx` and connected it via GET `/hackathon/me/joined` on the NestJS backend.
-- Updated navigation layout links in `DashboardLayout.tsx` to point to `/my-hackathons`.
+- Created the organizer route group layout in `app/(organizer)/layout.tsx` to handle RBAC gating (allowing only ORGANIZER and ADMIN).
+- Developed the Organizer Dashboard in `app/(organizer)/organizer/hackathons/page.tsx` featuring statistics cards (Total Hackathons, Active, Total Participants, Total Submissions), search, and links to all event management sub-hubs.
+- Implemented the Create Hackathon page in `app/(organizer)/organizer/hackathons/create/page.tsx` with future-date helper inputs and form validation.
+- Implemented the Edit Hackathon Settings page in `app/(organizer)/organizer/hackathons/[id]/edit/page.tsx` with selective-update delta payload transmission.
+- Crafted the Applications Review panel in `app/(organizer)/organizer/hackathons/[id]/applications/page.tsx` with filter tabs and a slide-out drawer (340px width) detailing applicant bios, custom brand SVG links, and inline Accept / Reject action buttons.
+- Developed the Teams Hub in `app/(organizer)/organizer/hackathons/[id]/teams/page.tsx` displaying team details and invite codes.
+- Implemented the Events Schedule CRUD manager in `app/(organizer)/organizer/hackathons/[id]/events/page.tsx`.
+- Constructed the Announcements Broadcast page in `app/(organizer)/organizer/hackathons/[id]/announcements/page.tsx`.
+- Set up the Support Tickets desk in `app/(organizer)/organizer/hackathons/[id]/tickets/page.tsx` with Claim and Resolve action flows.
+- Built the Submissions Review page in `app/(organizer)/organizer/hackathons/[id]/submissions/page.tsx` integrating video player, repos link, and `VotingPanel` for grading.
+- Implemented the Leaderboard standings table in `app/(organizer)/organizer/hackathons/[id]/results/page.tsx`.
+- Developed the Certificates Management registry in `app/(organizer)/organizer/hackathons/[id]/certificates/page.tsx` and the bulk issuance trigger in `app/(organizer)/organizer/hackathons/[id]/certificates/issue/page.tsx`.
+- Refactored `DashboardLayout.tsx` to make the sidebar navigation dynamic and context-aware based on user role and pathname. If managing a specific hackathon, all hackathon-specific administration links (Applications, Teams, Events, Announcements, Tickets, Submissions, Leaderboard, and Certificates) appear directly in the sidebar for easy access.
 
 ## Decisions made
 
-- Used Zod validation rules consistently across all form submissions.
-- Redirected non-participants trying to access registration flows gracefully.
-- Configured debounced auto-saving on the project submission builder to align with backend constraints.
-- Replaced non-existent `Github` icons from `lucide-react` with `GitBranch` to secure compile compatibility.
-- Implemented layouts-level RBAC role gating in `app/(participant)/layout.tsx` to block non-PARTICIPANT roles (like ORGANIZER/ADMIN) from accessing participant routes.
+- Refactored forms to use standard React `useState` and manual Zod schema validation matching existing application patterns (avoiding unnecessary additions of `react-hook-form` and `@hookform/resolvers` libraries).
+- Used raw custom SVGs for LinkedIn and GitHub brand icons, bypassing the missing export errors from the older version of `lucide-react` installed in the project.
+- Configured selective-update payloads for the edit settings form to ensure only changed dates are verified by the backend's `IsFutureDate` constraint (preventing errors on saving changes for hackathons that have already started).
+- Configured layout-level gating for Organizer and Admin roles to protect all `/organizer` routes.
+- Swapped active sidebar links dynamically based on user role and current pathname context to improve UX.
 
 ## Problems solved
 
-- Resolved a compilation issue caused by missing imports and icons in `lucide-react`.
-- Fixed the "My Hackathons" navigation link loading all global hackathons by implementing a user-joined filter endpoint and page.
-- Secured frontend participant routes from being browsed by organizers/admins.
+- Fixed the build failure caused by missing `react-hook-form` library imports.
+- Resolved compilation issues arising from missing `Github` and `Linkedin` exports in `lucide-react`.
+- Restored sign-out handler in `DashboardLayout.tsx` which was accidentally removed during navigation refactoring.
+- Resolved lack of visibility for hackathon management sub-pages by creating a context-aware navigation layout parsing the hackathon ID dynamically.
+- Verified successful production build without any compile warnings or type errors using `npm run build`.
 
 ## Current state
 
-- The Participant Dashboard and Team Workspace modules are fully completed, styling is aligned to the design system, and TypeScript compilation passes without errors.
+- The Organizer Dashboard and management sub-hubs are fully implemented, Zod validations are integrated, sidebar navigation is role- and context-aware, and production build compiles successfully.
 
 ## Next session starts with
 
-- Admin / Organizer dashboard views or hackathon event administration panels.
+- Admin system-wide controls or landing pages optimizations.
