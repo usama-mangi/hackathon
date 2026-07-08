@@ -75,107 +75,107 @@ export default async function HackathonResultsPage({ params }: PageProps) {
           <section className="bg-surface-container-low border border-outline-variant/60 rounded-xl p-6 md:p-10">
             <h2 className="font-display font-bold text-xl text-on-surface mb-8 text-center">Top Innovators</h2>
             
-            <div className="flex flex-col md:flex-row justify-center items-end gap-6 h-auto md:h-[360px] max-w-4xl mx-auto">
-              
-              {/* 2nd Place (Silver - Left) */}
-              {secondPlace ? (
-                <div className="w-full md:w-1/3 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col items-center shadow-sm order-2 md:order-1 transform md:translate-y-8 h-[240px] md:h-[280px] justify-between">
-                  <div className="flex flex-col items-center">
-                    <div className="w-14 h-14 rounded-full bg-slate-200 border-4 border-slate-300 flex items-center justify-center mb-3 relative">
-                      <Award className="text-slate-600 h-6 w-6" />
-                      <div className="absolute -bottom-2 bg-slate-600 text-white font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-slate-700">
-                        2ND
-                      </div>
-                    </div>
-                    <h3 className="font-display font-bold text-base text-on-surface text-center line-clamp-1">
-                      {secondPlace.team.name}
-                    </h3>
-                    <p className="text-xs text-on-surface-variant text-center mt-0.5 line-clamp-1">
-                      {secondPlace.title}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center gap-2 w-full mt-4">
-                    <div className="font-mono text-sm font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-md">
-                      {getAverageScore(secondPlace)} / 10
-                    </div>
-                    <Link
-                      href={`/submissions/${secondPlace.id}`}
-                      className="text-[11px] font-semibold text-primary hover:underline"
-                    >
-                      View project
-                    </Link>
-                  </div>
-                </div>
-              ) : (
-                <div className="hidden md:block w-1/3 h-[240px]" />
-              )}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end max-w-4xl mx-auto">
 
-              {/* 1st Place (Gold - Center) */}
-              {firstPlace ? (
-                <div className="w-full md:w-1/3 bg-surface-container-lowest border-2 border-status-warning rounded-xl p-6 flex flex-col items-center shadow-[0_10px_25px_-5px_rgba(245,158,11,0.15)] order-1 md:order-2 relative z-10 h-[280px] md:h-[320px] justify-between">
-                  <div className="absolute top-0 w-full h-1.5 bg-status-warning rounded-t-lg -mt-[2px] left-0" />
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-full bg-amber-100 border-4 border-status-warning flex items-center justify-center mb-3 relative">
-                      <Trophy className="text-status-warning h-8 w-8" />
-                      <div className="absolute -bottom-2 bg-status-warning text-white font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-amber-600">
-                        1ST PLACE
+              {/* Col 1: 2nd Place (Silver - Left) — offset downward via padding-bottom */}
+              <div className="md:pb-10">
+                {secondPlace ? (
+                  <div className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col items-center shadow-sm h-[260px] md:h-[280px] justify-between">
+                    <div className="flex flex-col items-center">
+                      <div className="w-14 h-14 rounded-full bg-slate-200 border-4 border-slate-300 flex items-center justify-center mb-3 relative">
+                        <Award className="text-slate-600 h-6 w-6" />
+                        <div className="absolute -bottom-2 bg-slate-600 text-white font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-slate-700">
+                          2ND
+                        </div>
                       </div>
+                      <h3 className="font-display font-bold text-base text-on-surface text-center line-clamp-1">
+                        {secondPlace.team.name}
+                      </h3>
+                      <p className="text-xs text-on-surface-variant text-center mt-0.5 line-clamp-1">
+                        {secondPlace.title}
+                      </p>
                     </div>
-                    <h3 className="font-display font-bold text-lg text-on-surface text-center line-clamp-1">
-                      {firstPlace.team.name}
-                    </h3>
-                    <p className="text-xs font-semibold text-secondary text-center mt-0.5 line-clamp-1">
-                      {firstPlace.title}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center gap-2 w-full mt-4">
-                    <div className="font-mono text-base font-bold text-amber-800 bg-amber-50 border border-amber-200 px-4 py-1 rounded-md">
-                      {getAverageScore(firstPlace)} / 10
+                    <div className="flex flex-col items-center gap-2 w-full mt-4">
+                      <div className="font-mono text-sm font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-md">
+                        {getAverageScore(secondPlace)} / 10
+                      </div>
+                      <Link
+                        href={`/submissions/${secondPlace.id}`}
+                        className="text-[11px] font-semibold text-primary hover:underline"
+                      >
+                        View project
+                      </Link>
                     </div>
-                    <Link
-                      href={`/submissions/${firstPlace.id}`}
-                      className="text-[11px] font-semibold text-primary hover:underline"
-                    >
-                      View project
-                    </Link>
                   </div>
-                </div>
-              ) : (
-                <div className="hidden md:block w-1/3 h-[280px]" />
-              )}
+                ) : null}
+              </div>
 
-              {/* 3rd Place (Bronze - Right) */}
-              {thirdPlace ? (
-                <div className="w-full md:w-1/3 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col items-center shadow-sm order-3 transform md:translate-y-12 h-[220px] md:h-[260px] justify-between">
-                  <div className="flex flex-col items-center">
-                    <div className="w-14 h-14 rounded-full bg-orange-100 border-4 border-orange-300 flex items-center justify-center mb-3 relative">
-                      <Award className="text-orange-600 h-6 w-6" />
-                      <div className="absolute -bottom-2 bg-orange-600 text-white font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-orange-700">
-                        3RD
+              {/* Col 2: 1st Place (Gold - always in center column) */}
+              <div>
+                {firstPlace ? (
+                  <div className="w-full bg-surface-container-lowest border-2 border-status-warning rounded-xl p-6 flex flex-col items-center shadow-[0_10px_25px_-5px_rgba(245,158,11,0.15)] relative z-10 h-[300px] md:h-[320px] justify-between">
+                    <div className="absolute top-0 w-full h-1.5 bg-status-warning rounded-t-lg mt-[-2px] left-0" />
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 rounded-full bg-amber-100 border-4 border-status-warning flex items-center justify-center mb-3 relative">
+                        <Trophy className="text-status-warning h-8 w-8" />
+                        <div className="absolute w-max -bottom-2 bg-status-warning text-white font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-amber-600">
+                          1ST PLACE
+                        </div>
                       </div>
+                      <h3 className="font-display font-bold text-lg text-on-surface text-center line-clamp-1">
+                        {firstPlace.team.name}
+                      </h3>
+                      <p className="text-xs font-semibold text-secondary text-center mt-0.5 line-clamp-1">
+                        {firstPlace.title}
+                      </p>
                     </div>
-                    <h3 className="font-display font-bold text-base text-on-surface text-center line-clamp-1">
-                      {thirdPlace.team.name}
-                    </h3>
-                    <p className="text-xs text-on-surface-variant text-center mt-0.5 line-clamp-1">
-                      {thirdPlace.title}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center gap-2 w-full mt-4">
-                    <div className="font-mono text-sm font-semibold text-orange-800 bg-orange-50 px-3 py-1 rounded-md">
-                      {getAverageScore(thirdPlace)} / 10
+                    <div className="flex flex-col items-center gap-2 w-full mt-4">
+                      <div className="font-mono text-base font-bold text-amber-800 bg-amber-50 border border-amber-200 px-4 py-1 rounded-md">
+                        {getAverageScore(firstPlace)} / 10
+                      </div>
+                      <Link
+                        href={`/submissions/${firstPlace.id}`}
+                        className="text-[11px] font-semibold text-primary hover:underline"
+                      >
+                        View project
+                      </Link>
                     </div>
-                    <Link
-                      href={`/submissions/${thirdPlace.id}`}
-                      className="text-[11px] font-semibold text-primary hover:underline"
-                    >
-                      View project
-                    </Link>
                   </div>
-                </div>
-              ) : (
-                <div className="hidden md:block w-1/3 h-[220px]" />
-              )}
+                ) : null}
+              </div>
+
+              {/* Col 3: 3rd Place (Bronze - Right) — offset further downward */}
+              <div className="md:pb-16">
+                {thirdPlace ? (
+                  <div className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col items-center shadow-sm h-[240px] md:h-[260px] justify-between">
+                    <div className="flex flex-col items-center">
+                      <div className="w-14 h-14 rounded-full bg-orange-100 border-4 border-orange-300 flex items-center justify-center mb-3 relative">
+                        <Award className="text-orange-600 h-6 w-6" />
+                        <div className="absolute -bottom-2 bg-orange-600 text-white font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-orange-700">
+                          3RD
+                        </div>
+                      </div>
+                      <h3 className="font-display font-bold text-base text-on-surface text-center line-clamp-1">
+                        {thirdPlace.team.name}
+                      </h3>
+                      <p className="text-xs text-on-surface-variant text-center mt-0.5 line-clamp-1">
+                        {thirdPlace.title}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center gap-2 w-full mt-4">
+                      <div className="font-mono text-sm font-semibold text-orange-800 bg-orange-50 px-3 py-1 rounded-md">
+                        {getAverageScore(thirdPlace)} / 10
+                      </div>
+                      <Link
+                        href={`/submissions/${thirdPlace.id}`}
+                        className="text-[11px] font-semibold text-primary hover:underline"
+                      >
+                        View project
+                      </Link>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
 
             </div>
           </section>

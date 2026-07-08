@@ -98,7 +98,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <path d="M19 9h-6V3H5v12h6v6z"/>
               </svg>
             </div>
-            <span className="font-display font-bold text-lg tracking-tight text-on-surface">ProHack</span>
+            <span className="font-display font-bold text-lg tracking-tight text-on-surface">Epoch</span>
             <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-mono">Epoch</span>
           </div>
 
@@ -165,7 +165,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <path d="M19 9h-6V3H5v12h6v6z"/>
               </svg>
             </div>
-            <span className="font-display font-bold text-lg tracking-tight text-on-surface">ProHack</span>
+            <span className="font-display font-bold text-lg tracking-tight text-on-surface">Epoch</span>
           </div>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -190,7 +190,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                       <path d="M19 9h-6V3H5v12h6v6z"/>
                     </svg>
                   </div>
-                  <span className="font-display font-bold text-lg tracking-tight">ProHack</span>
+                  <span className="font-display font-bold text-lg tracking-tight">Epoch</span>
                 </div>
                 <button
                   onClick={() => setMobileMenuOpen(false)}

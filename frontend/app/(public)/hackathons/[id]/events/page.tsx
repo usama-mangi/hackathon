@@ -121,7 +121,7 @@ export default async function HackathonEventsPage({ params }: PageProps) {
         {/* Submission Countdown */}
         <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
           <h3 className="font-display font-bold text-sm text-on-surface mb-3 flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-[20px]">timer</span>
+            <Clock className="text-primary" />
             Countdown to Submission
           </h3>
           <div className="bg-surface-container-low p-4 rounded-xl border border-outline-variant/60">

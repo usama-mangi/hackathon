@@ -29,7 +29,7 @@ export class MailService {
       <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
         <h2 style="color: #2563eb;">Verify your email address</h2>
         <p>Hello ${name},</p>
-        <p>Thank you for registering on ProHack. Please click the button below to verify your email address and activate your account:</p>
+        <p>Thank you for registering on Epoch. Please click the button below to verify your email address and activate your account:</p>
         <div style="margin: 24px 0;">
           <a href="${url}" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Verify Email</a>
         </div>
@@ -40,7 +40,7 @@ export class MailService {
 
     if (this.resend) {
       try {
-        const fromEmail = this.configService.get<string>('MAIL_FROM') || 'ProHack <onboarding@resend.dev>';
+        const fromEmail = this.configService.get<string>('MAIL_FROM') || 'Epoch <onboarding@resend.dev>';
         await this.resend.emails.send({
           from: fromEmail,
           to: email,
@@ -71,7 +71,7 @@ export class MailService {
       <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
         <h2 style="color: #2563eb;">Reset your password</h2>
         <p>Hello ${name},</p>
-        <p>We received a request to reset your password on ProHack. Please click the button below to reset your password:</p>
+        <p>We received a request to reset your password on Epoch. Please click the button below to reset your password:</p>
         <div style="margin: 24px 0;">
           <a href="${url}" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Reset Password</a>
         </div>
@@ -83,7 +83,7 @@ export class MailService {
 
     if (this.resend) {
       try {
-        const fromEmail = this.configService.get<string>('MAIL_FROM') || 'ProHack <onboarding@resend.dev>';
+        const fromEmail = this.configService.get<string>('MAIL_FROM') || 'Epoch <onboarding@resend.dev>';
         await this.resend.emails.send({
           from: fromEmail,
           to: email,

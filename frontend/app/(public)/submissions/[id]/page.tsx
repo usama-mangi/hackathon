@@ -1,9 +1,10 @@
 import React from "react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { api } from "@/src/lib/api";
 import VotingPanel from "@/src/components/layouts/VotingPanel";
-import { Code, Users, Play, ChevronRight, Tags } from "lucide-react";
+import VideoPlayer from "@/src/components/ui/VideoPlayer";
+import Breadcrumb from "@/src/components/ui/Breadcrumb";
+import { Code, Users, Link2 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -74,21 +75,15 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 w-full flex-grow flex flex-col">
       {/* Breadcrumbs */}
-      <nav className="flex items-center gap-1.5 text-xs text-on-surface-variant mb-6 font-medium">
-        <Link href="/hackathons" className="hover:text-primary transition-colors">
-          Hackathons
-        </Link>
-        <ChevronRight className="h-3 w-3 text-outline" />
-        <Link href={`/hackathons/${submission.team.hackathonId}`} className="hover:text-primary transition-colors">
-          Event Hub
-        </Link>
-        <ChevronRight className="h-3 w-3 text-outline" />
-        <Link href={`/hackathons/${submission.team.hackathonId}/submissions`} className="hover:text-primary transition-colors">
-          Submissions
-        </Link>
-        <ChevronRight className="h-3 w-3 text-outline" />
-        <span className="text-on-surface font-semibold truncate">{submission.title}</span>
-      </nav>
+      <Breadcrumb
+        className="mb-6"
+        items={[
+          { label: "Hackathons", href: "/hackathons" },
+          { label: "Event Hub", href: `/hackathons/${submission.team.hackathonId}` },
+          { label: "Submissions", href: `/hackathons/${submission.team.hackathonId}/submissions` },
+          { label: submission.title },
+        ]}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Column (70%) - Project Details */}
@@ -119,22 +114,8 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Video Player / Thumbnail placeholder */}
-          <div className="aspect-video w-full bg-slate-900 rounded-xl flex items-center justify-center relative overflow-hidden border border-outline-variant group shadow-sm">
-            <img
-              src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1024&auto=format&fit=crop"
-              alt="Project demo placeholder screenshot"
-              className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-[1.01] transition-transform duration-300"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-            
-            <button className="w-16 h-16 bg-primary text-on-primary rounded-full flex items-center justify-center z-10 hover:bg-primary-container hover:scale-105 transition-all shadow-lg">
-              <Play className="h-6 w-6 fill-current" />
-            </button>
-            <div className="absolute bottom-4 left-4 text-xs font-mono text-white/80 z-10">
-              Demo Walkthrough (3:00)
-            </div>
-          </div>
+          {/* Video Player */}
+          <VideoPlayer videoUrl={submission.videoUrl} title={submission.title} />
 
           {/* Project Description */}
           <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
@@ -163,7 +144,7 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
                   rel="noreferrer"
                   className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-on-primary rounded-lg hover:bg-opacity-95 transition-all shadow-sm font-semibold text-xs"
                 >
-                  <span className="material-symbols-outlined text-base">open_in_new</span>
+                  <Link2 className="h-4 w-4" />
                   Live Demo
                 </a>
               )}

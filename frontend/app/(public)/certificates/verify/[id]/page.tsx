@@ -63,7 +63,7 @@ export default async function VerifyCertificatePage({ params }: PageProps) {
       <section className="w-full max-w-[600px] mb-12 text-center">
         <h1 className="font-display font-bold text-3xl text-on-surface mb-2">Verify Certificate</h1>
         <p className="text-sm text-on-surface-variant mb-6">
-          Verify the authenticity of digital certificates issued by ProHack Epoch.
+          Verify the authenticity of digital certificates issued by Epoch Epoch.
         </p>
         
         {/* Search Input client form */}
@@ -156,7 +156,7 @@ export default async function VerifyCertificatePage({ params }: PageProps) {
                           Issuing Authority
                         </span>
                         <p className="font-semibold text-primary">
-                          ProHack Epoch Systems
+                          Epoch Epoch Systems
                         </p>
                       </div>
                     </div>

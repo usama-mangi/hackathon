@@ -35,23 +35,13 @@ export default function PublicNavbar() {
     }
   };
 
-  // Check if we are inside a single hackathon detail page.
-  // Paths: /hackathons/[id] or /hackathons/[id]/events etc.
-  const hackathonIdMatch = pathname?.match(/^\/hackathons\/([^\/]+)/);
-  const hackathonId = hackathonIdMatch ? hackathonIdMatch[1] : null;
-
-  const navLinks = hackathonId && pathname !== "/hackathons"
-    ? [
-        { name: "Overview", href: `/hackathons/${hackathonId}` },
-        { name: "Schedule", href: `/hackathons/${hackathonId}/events` },
-        { name: "Submissions", href: `/hackathons/${hackathonId}/submissions` },
-        { name: "Announcements", href: `/hackathons/${hackathonId}/announcements` },
-        { name: "Results", href: `/hackathons/${hackathonId}/results` },
-      ]
-    : [
-        { name: "Explore Hackathons", href: "/hackathons" },
-        { name: "Verify Certificate", href: "/certificates/verify/id" }, // Placeholder route
-      ];
+  // The hackathon-level tab strip (Overview / Schedule / etc.) is rendered by
+  // HackathonDetailTabs inside app/(public)/hackathons/[id]/layout.tsx.
+  // The top navbar always shows the generic site-level links.
+  const navLinks = [
+    { name: "Explore Hackathons", href: "/hackathons" },
+    { name: "Verify Certificate", href: "/certificates/verify/id" },
+  ];
 
   return (
     <header className="bg-surface border-b border-outline-variant h-16 flex items-center justify-between px-4 md:px-8 sticky top-0 z-50">
@@ -62,10 +52,7 @@ export default function PublicNavbar() {
               <path d="M19 9h-6V3H5v12h6v6z" />
             </svg>
           </div>
-          <span className="font-display font-bold text-lg tracking-tight text-on-surface">ProHack</span>
-          <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-mono">
-            Epoch
-          </span>
+          <span className="font-display font-bold text-lg tracking-tight text-on-surface">Epoch</span>
         </Link>
 
         {/* Desktop Main Navigation Links */}
@@ -173,7 +160,7 @@ export default function PublicNavbar() {
           <div className="fixed inset-0 bg-black/40" onClick={() => setMobileMenuOpen(false)} />
           <aside className="relative flex flex-col w-[260px] max-w-xs bg-surface-container-lowest h-full pt-4 border-r border-outline-variant shadow-xl">
             <div className="flex items-center justify-between px-6 pb-4 border-b border-outline-variant">
-              <span className="font-display font-bold text-lg text-primary">ProHack</span>
+              <span className="font-display font-bold text-lg text-primary">Epoch</span>
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-1 rounded-md text-on-surface-variant hover:bg-surface-container-high"

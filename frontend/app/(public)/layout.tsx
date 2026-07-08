@@ -24,10 +24,10 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               <path d="M19 9h-6V3H5v12h6v6z" />
             </svg>
           </div>
-          <span className="font-display font-bold text-sm tracking-tight text-on-surface">ProHack</span>
+          <span className="font-display font-bold text-sm tracking-tight text-on-surface">Epoch</span>
         </div>
         <div className="text-on-surface-variant text-center">
-          © {new Date().getFullYear()} ProHack Epoch. Built for the developer community.
+          © {new Date().getFullYear()} Epoch Epoch. Built for the developer community.
         </div>
         <div className="flex gap-4">
           <a href="#" className="text-on-surface-variant hover:text-primary transition-colors">Privacy Policy</a>

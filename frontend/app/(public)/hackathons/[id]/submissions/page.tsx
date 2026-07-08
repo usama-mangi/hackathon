@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { api } from "@/src/lib/api";
-import { Code, Group, Layers, Trophy } from "lucide-react";
+import { ArrowRight, Code, Group, Layers, Link2, Trophy } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -134,16 +134,17 @@ export default async function HackathonSubmissionsPage({ params }: PageProps) {
                         className="text-on-surface-variant hover:text-primary transition-colors"
                         title="Live Demo"
                       >
-                        <span className="material-symbols-outlined text-base">open_in_new</span>
+                        <Link2 className="h-4 w-4" />
                       </a>
                     )}
                   </div>
 
                   <Link
                     href={`/submissions/${sub.id}`}
-                    className="text-xs font-semibold text-primary hover:text-primary-container flex items-center gap-1 group-hover:underline"
+                    className="text-xs font-semibold text-primary hover:text-primary-container flex items-center gap-1"
                   >
-                    View Project <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                    View Project
+                    <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
               </div>

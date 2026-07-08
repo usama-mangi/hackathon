@@ -50,7 +50,7 @@ function VerifyEmailContent() {
         <div className="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
           <Zap className="w-5 h-5 fill-current" />
         </div>
-        <h1 className="font-display font-bold text-2xl tracking-tight text-on-surface">ProHack</h1>
+        <h1 className="font-display font-bold text-2xl tracking-tight text-on-surface">Epoch</h1>
       </div>
 
       {/* Verification Card */}
@@ -66,7 +66,7 @@ function VerifyEmailContent() {
         {/* Heading & Subtext */}
         <h2 className="font-display font-bold text-xl text-on-surface mb-3">Check your email</h2>
         <p className="font-body text-sm text-on-surface-variant mb-8 px-2 leading-relaxed">
-          We sent a verification link to <span className="font-mono font-medium text-on-surface bg-surface-container-low px-1.5 py-0.5 rounded border border-outline-variant/40">{email}</span>. Click the link in the email to activate your ProHack account.
+          We sent a verification link to <span className="font-mono font-medium text-on-surface bg-surface-container-low px-1.5 py-0.5 rounded border border-outline-variant/40">{email}</span>. Click the link in the email to activate your Epoch account.
         </p>
 
         {/* Action Feedbacks */}

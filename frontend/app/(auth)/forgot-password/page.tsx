@@ -59,7 +59,7 @@ export default function ForgotPasswordPage() {
           <div className="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
             <Zap className="w-5 h-5 fill-current" />
           </div>
-          <h1 className="font-display font-bold text-2xl tracking-tight text-on-surface">ProHack</h1>
+          <h1 className="font-display font-bold text-2xl tracking-tight text-on-surface">Epoch</h1>
         </div>
 
         {/* Card Wrapper */}
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
         <div className="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
           <Zap className="w-5 h-5 fill-current" />
         </div>
-        <h1 className="font-display font-bold text-2xl tracking-tight text-on-surface">ProHack</h1>
+        <h1 className="font-display font-bold text-2xl tracking-tight text-on-surface">Epoch</h1>
       </div>
 
       {/* Card Wrapper */}
