@@ -53,6 +53,12 @@ export class HackathonController {
     return this.hackathonService.findAll();
   }
 
+  @Get('me/joined')
+  @ResponseMessage('Joined hackathons retrieved successfully')
+  async findJoined(@Session() session: UserSession) {
+    return this.hackathonService.findJoined(session.user.id);
+  }
+
   @Get(':id')
   @AllowAnonymous()
   async findOne(@Param('id') id: string) {

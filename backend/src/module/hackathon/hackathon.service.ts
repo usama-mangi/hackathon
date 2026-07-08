@@ -42,6 +42,26 @@ export class HackathonService {
     });
   }
 
+  async findJoined(userId: string) {
+    return this.prisma.hackathon.findMany({
+      where: {
+        participants: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
+      include: {
+        _count: {
+          select: {
+            participants: true,
+            teams: true,
+          },
+        },
+      },
+    });
+  }
+
   async findOne(id: string) {
     const hackathon = await this.prisma.hackathon.findUnique({
       where: { id },

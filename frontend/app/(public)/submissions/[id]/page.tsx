@@ -84,7 +84,7 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
   const teamMembers = submission.team.members || [];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 w-full flex-grow flex flex-col">
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 w-full grow flex flex-col">
       {/* Breadcrumbs */}
       <Breadcrumb
         className="mb-6"

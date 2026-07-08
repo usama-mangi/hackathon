@@ -8,7 +8,6 @@ import {
   LayoutDashboard, 
   Trophy, 
   Users, 
-  HelpCircle, 
   Award, 
   Settings, 
   LogOut,
@@ -32,11 +31,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "My Hackathons", href: "/hackathons", icon: Trophy },
-    { name: "My Team", href: "/team", icon: Users },
-    { name: "Support", href: "/support", icon: HelpCircle },
+    { name: "My Hackathons", href: "/my-hackathons", icon: Trophy },
+    { name: "My Team", href: "/teams", icon: Users },
     { name: "Certificates", href: "/certificates", icon: Award },
-    { name: "Profile Settings", href: "/settings", icon: Settings },
+    { name: "Profile Settings", href: "/profile", icon: Settings },
   ];
 
   const handleSignOut = async () => {
@@ -99,7 +97,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               </svg>
             </div>
             <span className="font-display font-bold text-lg tracking-tight text-on-surface">Epoch</span>
-            <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-mono">Epoch</span>
           </div>
 
           {/* Navigation Links */}
@@ -259,7 +256,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Main Content Area */}
         <main className="flex-1 flex flex-col md:pl-[260px] pt-16 md:pt-0">
-          <div className="flex-grow p-4 md:p-8 max-w-7xl mx-auto w-full">
+          <div className="grow p-4 md:p-8 max-w-7xl mx-auto w-full">
             {children}
           </div>
         </main>

@@ -25,7 +25,7 @@ export class TeamController {
     private readonly ticketService: TicketService,
   ) {}
 
-  @Post(':teamId/join')
+  @Post(':id/join')
   @ResponseMessage('Successfully joined the team')
   async join(
     @Param('teamId') teamId: string,
