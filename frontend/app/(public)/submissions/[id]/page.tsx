@@ -57,6 +57,17 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  // Server-side RBAC: check if the logged-in user is a mentor (or organizer/admin) of this hackathon.
+  // The API call will throw 401 if the user is not authenticated — we catch that and default to false.
+  let canVote = false;
+  try {
+    const roleCtx = await api(`/hackathon/${submission.team.hackathonId}/me/role`);
+    canVote = !!(roleCtx?.isMentor || roleCtx?.isOrganizer || roleCtx?.isJudge);
+  } catch {
+    // Unauthenticated or not a mentor — panel is hidden
+    canVote = false;
+  }
+
   // Helper to generate mock project tags for aesthetics (e.g. AI, Climate, Web3)
   const getProjectTags = (title: string, desc: string) => {
     const text = (title + " " + desc).toLowerCase();
@@ -182,14 +193,16 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
 
         </div>
 
-        {/* Right Column (30%) - Judging Breakdown Panel */}
-        <div className="lg:col-span-4">
-          <VotingPanel
-            submissionId={submission.id}
-            hackathonId={submission.team.hackathonId}
-            initialVotes={submission.votes}
-          />
-        </div>
+        {/* Right Column (30%) - Judging Breakdown Panel — only rendered for mentors/organizers */}
+        {canVote && (
+          <div className="lg:col-span-4">
+            <VotingPanel
+              submissionId={submission.id}
+              hackathonId={submission.team.hackathonId}
+              initialVotes={submission.votes}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -142,4 +142,39 @@ export class HackathonService {
 
     return leaderboard;
   }
+
+  /**
+   * Returns the calling user's relationship to a specific hackathon.
+   * Used by the frontend to gate UI (e.g. VotingPanel) without a full RBAC check on each render.
+   */
+  async getMyRole(
+    hackathonId: string,
+    userId: string,
+    userRole: string,
+  ): Promise<{
+    isMentor: boolean;
+    isJudge: boolean;
+    isOrganizer: boolean;
+    isParticipant: boolean;
+  }> {
+    // Verify hackathon exists
+    await this.hackathonAuth.getHackathonOrThrow(hackathonId);
+
+    const [isMentor, isJudge, isOrganizer, participant] = await Promise.all([
+      this.hackathonAuth.isHackathonMentor(hackathonId, userId),
+      this.hackathonAuth.isHackathonJudge(hackathonId, userId),
+      this.hackathonAuth.isOrganizerOrAdmin(hackathonId, userId, userRole),
+      this.prisma.hackathonParticipant.findUnique({
+        where: { hackathonId_userId: { hackathonId, userId } },
+        select: { id: true },
+      }),
+    ]);
+
+    return {
+      isMentor,
+      isJudge,
+      isOrganizer,
+      isParticipant: !!participant,
+    };
+  }
 }

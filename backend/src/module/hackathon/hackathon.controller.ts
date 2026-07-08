@@ -59,6 +59,16 @@ export class HackathonController {
     return this.hackathonService.findOne(id);
   }
 
+  @Get(':id/me/role')
+  @ResponseMessage('Hackathon role context retrieved')
+  async getMyRole(@Param('id') id: string, @Session() session: UserSession) {
+    return this.hackathonService.getMyRole(
+      id,
+      session.user.id,
+      session.user.role as string,
+    );
+  }
+
   @Put(':id')
   @Roles(['ADMIN', 'ORGANIZER'])
   @ResponseMessage('Hackathon updated successfully')
