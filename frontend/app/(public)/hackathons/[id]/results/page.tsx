@@ -52,7 +52,7 @@ export default async function HackathonResultsPage({ params }: PageProps) {
   const remaining = leaderboard.slice(3);
 
   return (
-    <div className="space-y-12 py-4 flex-grow flex flex-col">
+    <div className="space-y-12 py-4 grow flex flex-col">
       {error && (
         <div className="bg-status-error/10 border border-status-error/20 text-status-error px-4 py-3 rounded-lg text-sm">
           {error}
@@ -60,7 +60,7 @@ export default async function HackathonResultsPage({ params }: PageProps) {
       )}
 
       {!error && leaderboard.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-outline-variant rounded-xl bg-surface-container-low flex-grow">
+        <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-outline-variant rounded-xl bg-surface-container-low grow">
           <Trophy className="w-12 h-12 text-outline mb-4" />
           <h3 className="font-display font-semibold text-lg text-on-surface">Results Pending</h3>
           <p className="text-sm text-on-surface-variant mt-1">

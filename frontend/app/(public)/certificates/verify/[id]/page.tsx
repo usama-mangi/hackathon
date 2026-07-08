@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import { api } from "@/src/lib/api";
 import { CheckCircle2, Shield, Search, FileDown, AlertTriangle, Printer } from "lucide-react";
 import VerifySearchForm from "@/src/components/layouts/VerifySearchForm";
@@ -58,7 +57,7 @@ export default async function VerifyCertificatePage({ params }: PageProps) {
   };
 
   return (
-    <main className="flex-grow px-4 md:px-8 py-12 flex flex-col items-center max-w-4xl mx-auto w-full">
+    <main className="grow px-4 md:px-8 py-12 flex flex-col items-center max-w-4xl mx-auto w-full">
       {/* Search & Hero Header */}
       <section className="w-full max-w-[600px] mb-12 text-center">
         <h1 className="font-display font-bold text-3xl text-on-surface mb-2">Verify Certificate</h1>
@@ -124,7 +123,7 @@ export default async function VerifyCertificatePage({ params }: PageProps) {
                       </h3>
                     </div>
 
-                    <div className="max-w-md mx-auto h-[1px] bg-outline-variant/60 my-6" />
+                    <div className="max-w-md mx-auto h-px bg-outline-variant/60 my-6" />
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-md mx-auto pt-2 text-xs">
                       <div>
