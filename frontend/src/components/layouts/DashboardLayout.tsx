@@ -47,6 +47,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const match = pathname.match(/^\/organizer\/hackathons\/([^/]+)/);
     const hackathonId = match && match[1] !== "create" ? match[1] : null;
 
+    // Also detect (features) hackathon routes: /hackathons/[id]/mentor-dashboard etc
+    const featuresMatch = pathname.match(/^\/hackathons\/([^/]+)/);
+    const featuresHackathonId = featuresMatch ? featuresMatch[1] : null;
+
+    // Detect ticket detail route: /tickets/[id]
+    const ticketMatch = pathname.match(/^\/tickets\/([^/]+)/);
+
     if (hackathonId) {
       navigation = [
         { name: "All Hackathons", href: "/organizer/hackathons", icon: LayoutDashboard },
@@ -60,6 +67,18 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { name: "Certificates", href: `/organizer/hackathons/${hackathonId}/certificates`, icon: Award },
         { name: "Profile Settings", href: "/profile", icon: Settings },
       ];
+    } else if (featuresHackathonId) {
+      navigation = [
+        { name: "Back to Dashboard", href: "/organizer/hackathons", icon: LayoutDashboard },
+        { name: "Mentor Board", href: `/hackathons/${featuresHackathonId}/mentor-dashboard`, icon: Ticket },
+        { name: "Judge Dashboard", href: `/hackathons/${featuresHackathonId}/judge-dashboard`, icon: Trophy },
+        { name: "Profile Settings", href: "/profile", icon: Settings },
+      ];
+    } else if (ticketMatch) {
+      navigation = [
+        { name: "Back to Dashboard", href: "/organizer/hackathons", icon: LayoutDashboard },
+        { name: "Profile Settings", href: "/profile", icon: Settings },
+      ];
     } else {
       navigation = [
         { name: "Organizer Dashboard", href: "/organizer/hackathons", icon: LayoutDashboard },
@@ -67,13 +86,32 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       ];
     }
   } else {
-    navigation = [
-      { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-      { name: "My Hackathons", href: "/my-hackathons", icon: Trophy },
-      { name: "My Team", href: "/teams", icon: Users },
-      { name: "Certificates", href: "/certificates", icon: Award },
-      { name: "Profile Settings", href: "/profile", icon: Settings },
-    ];
+    // Detect (features) hackathon routes for non-organizer roles (mentors)
+    const featuresMatch = pathname.match(/^\/hackathons\/([^/]+)/);
+    const featuresHackathonId = featuresMatch ? featuresMatch[1] : null;
+    const ticketMatch = pathname.match(/^\/tickets\/([^/]+)/);
+
+    if (featuresHackathonId) {
+      navigation = [
+        { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+        { name: "Mentor Board", href: `/hackathons/${featuresHackathonId}/mentor-dashboard`, icon: Ticket },
+        { name: "Judge Dashboard", href: `/hackathons/${featuresHackathonId}/judge-dashboard`, icon: Trophy },
+        { name: "Profile Settings", href: "/profile", icon: Settings },
+      ];
+    } else if (ticketMatch) {
+      navigation = [
+        { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+        { name: "Profile Settings", href: "/profile", icon: Settings },
+      ];
+    } else {
+      navigation = [
+        { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+        { name: "My Hackathons", href: "/my-hackathons", icon: Trophy },
+        { name: "My Team", href: "/teams", icon: Users },
+        { name: "Certificates", href: "/certificates", icon: Award },
+        { name: "Profile Settings", href: "/profile", icon: Settings },
+      ];
+    }
   }
 
   const handleSignOut = async () => {

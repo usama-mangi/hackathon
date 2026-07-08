@@ -71,6 +71,36 @@ export class TicketService {
   }
 
   /**
+   * Retrieve a single ticket by ID with full relations.
+   */
+  async findOne(ticketId: string) {
+    const ticket = await this.prisma.ticket.findUnique({
+      where: { id: ticketId },
+      include: {
+        team: {
+          include: {
+            members: {
+              include: {
+                user: {
+                  select: { id: true, name: true, email: true, image: true },
+                },
+              },
+            },
+          },
+        },
+        mentor: { select: { id: true, name: true, email: true, image: true } },
+        hackathon: { select: { id: true, name: true } },
+      },
+    });
+
+    if (!ticket) {
+      throw new NotFoundException('Ticket not found');
+    }
+
+    return ticket;
+  }
+
+  /**
    * View all open tickets for a hackathon — ADMIN, ORGANIZER, or hackathon Mentor.
    */
   async getTicketsByHackathon(
