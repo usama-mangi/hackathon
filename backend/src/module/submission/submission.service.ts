@@ -176,7 +176,16 @@ export class SubmissionService {
     const submission = await this.prisma.submission.findUnique({
       where: { id },
       include: {
-        team: true,
+        team: {
+          include: {
+            members: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        },
+        votes: true,
       },
     });
 

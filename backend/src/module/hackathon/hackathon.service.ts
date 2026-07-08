@@ -30,12 +30,29 @@ export class HackathonService {
   }
 
   async findAll() {
-    return this.prisma.hackathon.findMany();
+    return this.prisma.hackathon.findMany({
+      include: {
+        _count: {
+          select: {
+            participants: true,
+            teams: true,
+          },
+        },
+      },
+    });
   }
 
   async findOne(id: string) {
     const hackathon = await this.prisma.hackathon.findUnique({
       where: { id },
+      include: {
+        _count: {
+          select: {
+            participants: true,
+            teams: true,
+          },
+        },
+      },
     });
     if (!hackathon) {
       throw new NotFoundException(`Hackathon with ID ${id} not found`);

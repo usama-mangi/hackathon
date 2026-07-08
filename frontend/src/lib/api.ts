@@ -42,11 +42,23 @@ export async function api(path: string, options: FetchOptions = {}) {
     } catch {
       errorData = { message: "An unexpected error occurred." };
     }
-    throw new Error(errorData?.message || response.statusText);
+    // Unwrap nested message if wrapped by the ResponseInterceptor
+    const message = errorData?.message || response.statusText;
+    throw new Error(message);
   }
 
   try {
-    return await response.json();
+    const json = await response.json();
+    // Unwrap the global ResponseInterceptor envelope: { statusCode, message, data }
+    if (
+      json !== null &&
+      typeof json === "object" &&
+      "statusCode" in json &&
+      "data" in json
+    ) {
+      return json.data;
+    }
+    return json;
   } catch {
     return null;
   }
